@@ -1,0 +1,18 @@
+[Project+] Move v-sync call for Brawl/PM [hannesmann, Dan Salvato, Achilles]
+* 04023b88 60000000
+* 04024028 481c4904
+
+[Project+] Skip strap screen [PyotrLuzhin]
+* 046CADE8 48000298
+
+Fixed OSReport Syntax on File Reading [DukeItOut]
+* 0042101F 0000000A
+* 04421020 00000000
+* 04421060 0A000000
+* 04421120 0A000000
+* 04422CF4 290A0000
+* 020266BA 00002CB2
+* 0401CDFC 8063119C
+* 0401CE04 38630006
+* 0401CD24 806311A0
+* 0401CD2C 38630006

@@ -1,0 +1,5 @@
+Offsets:
+0x10EE8 54 AttackHi3 Main, GFX, SFX
+0x248E4 74 ThrowHi Main, GFX, SFX
+0xA288 1C2 EntryR GFX, SFX
+0x10C50 1D3 SpecialAirSEnd Main, GFX, SFX

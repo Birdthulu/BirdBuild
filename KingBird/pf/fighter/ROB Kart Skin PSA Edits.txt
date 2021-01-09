@@ -1,0 +1,10 @@
+Offsets:
+0x27614 A WalkSlow GFX
+0x293F8 B WalkMiddle GFX
+0x29AE0 C WalkFast GFX
+0x2A9B0 E Dash Other
+0x29CA0 F Run GFX
+0x27AF4 12 TurnRun Other
+0x273FC 44 EscapeF GFX
+0x29D40 45 EscapeB GFX
+0x29C20 1D4 SpecialSEnd Other
