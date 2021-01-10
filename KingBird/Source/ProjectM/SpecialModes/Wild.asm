@@ -11,7 +11,7 @@ HOOK @ $80951454
     lwz r4, 0x44(r4)
     lis r3, 0x3F80        	# \ 1.0
     stw r3, -0x4(r1)    	# /
-    lis r3, 0x4140        	# \ 12.0, default speed
+    lis r3, 0x4100        	# \ 8.0, default speed
     stw r3, -0x8(r1)    	# /
 	lis r12, 0x8054			# \ Load form 8053F028
 	lwz r12, -0xFD8(r12)	# /
