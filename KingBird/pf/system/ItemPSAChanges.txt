@@ -3,14 +3,13 @@ New to P+ 2.2:
 ################################
 ItmPowderBoxParam.pac
 Hidden Action 0:
-	If Compare: IC-Basic[21004] == 5.0				# If the last hit was type 5 (Fire), 3 (Electric), 13 (Light), 15 (Green Fire) or 21 (Aura), blow up!
-		Or Comparison Compare: IC-Basic[21004] == 3.0
-		Or Comparison Compare: IC-Basic[21004] == 13.0
+	If Compare: IC-Basic[21004] == 5.0				# If the last hit was type 5 (Fire), 15 (Green Fire) or 21 (Aura), blow up!
 		Or Comparison Compare: IC-Basic[21004] == 15.0
 		Or Comparison Compare: IC-Basic[21004] == 21.0
 			020E0000:
 			Change Action: action=7, Requirement=Button Tap?
 	End If
+End If
 
 ################################
 
