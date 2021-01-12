@@ -3,6 +3,7 @@ Dolphin/
 Utilities/
 Release/
 *.gct
+*.thp
 Build/Project+/codeset.txt
 Build/Project+/log.txt
 "Other Dev Tools/Tracklists/*.tlst"
