@@ -1,6 +1,3 @@
-
-
-
 renderDebug/[soCollisionAttackModuleImpl] [Eon]
 .macro callFunc(<addr>) 
 {

@@ -1,4 +1,3 @@
-
 Custom RenderDebug Call [Eon]
 .alias ProcessPosition = 0
 HOOK @ $8002DD24
@@ -50,7 +49,7 @@ HOOK @ $8002E5B4
 	rlwimi r3, r4, 16, 8, 15
 }
 
-Frame Advance Convert
+Frame Advance Convert [Eon]
 HOOK @ $8002E5C4
 {
 	cmpwi r0, 2
@@ -437,7 +436,8 @@ end:
 	blr
 }
 
-renderDebug/[Yakumono]
+renderDebug/[Yakumono] [Eon]
+#points Yakumono renderDebug into the StageObject renderDebug
 HOOK @ $8096e040
 {
 	lis r12, 0x8071 

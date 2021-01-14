@@ -1,4 +1,4 @@
-Collision Debug Function [Arthur] #draws collision that is stood on and its normal
+Collision Debug Function [Arthur, Eon] #draws collision that is stood on and its normal
 #setIgnoreDepth
 op li r5, 0 @ $80137860
 op li r5, 0 @ $8013789C
@@ -14,7 +14,7 @@ op b 0xEC @ $80137850
 #set ECBChange to transparent for now
 word 0x000000FF @ $805A2A5C
 
-draw/[clRhombus2D]
+draw/[clRhombus2D] [Eon]
 #r3 = 4 positions, x1,y1, x2, y2, x3,y3, x4,y4
 #r4 = colour
 #r5 = Zmode
@@ -118,7 +118,7 @@ zmodeset:
     blr 
 }
 
-Draw ECB adjustments 
+Draw ECB adjustments [Eon]
 op li r5, 1 @ $801377b8 #set zmode to true, take depth into account.
 HOOK @ $801377AC #set z-pos of previous frame to -1
 {
@@ -135,7 +135,7 @@ HOOK @ $801377C8 #set z-pos of current frame to 0
 word 0xFF6020FF @ $805A2A5C #previous frame colour
 word 0xFFA030FF @ $805A2A64 #current frame colour
 
-Draw Ledgegrab
+Draw Ledgegrab [Eon]
 .macro callfunc(<addr>) 
 {
 .alias temp_Hi = <addr> / 0x10000
