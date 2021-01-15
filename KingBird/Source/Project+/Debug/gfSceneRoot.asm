@@ -1,4 +1,4 @@
-renderDebug/[gfSceneRoot]
+renderDebug/[gfSceneRoot] [Eon]
 .alias stageID = 0
 .alias fighterID = 1
 .alias itemsarticlesID = 2 #also includes primids etc

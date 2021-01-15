@@ -1,4 +1,4 @@
-renderDebug/[Stage]
+renderDebug/[Stage] [Eon]
 .macro drawPart(<a>, <b>, <c>, <d>, <r>)
 {
 
@@ -113,7 +113,8 @@ end:
 
 }
 
-renderDebug/[grGimmick]
+renderDebug/[grGimmick] [Eon]
+#points to renderDebug/[Ground], the parent class's function
 HOOK @ $80978840
 {
 	stwu r1, -0x0010 (r1)
@@ -133,9 +134,8 @@ HOOK @ $80978840
 
 }
 
-renderDebug/[grCollisionManager]
-
-#80059e60 melee stage draw
+renderDebug/[grCollisionManager] [Eon]
+#based heavily on game loops in update/[grCollisionManager]
 .macro callFunc(<addr>) 
 {
 .alias temp_Hi = <addr> / 0x10000
@@ -201,7 +201,7 @@ end:
 	blr
 
 }
-#drawCollisionList
+#drawCollisionList 
 HOOK @ $80541F90
 {
 .alias input = 23
@@ -266,7 +266,7 @@ end:
 	addi r1, r1, 80
 	blr	
 }
-#DrawCollision(SegmentData, CollisionData)
+DrawCollision(SegmentData, CollisionData) [Eon]
 HOOK @ $80541F94
 {
 .alias SegmentData = 31
@@ -503,7 +503,7 @@ end:
 	blr	
 }
 
-Fully transparent Shapes arent drawn are not attempted to be drawn [Eon]
+Fully transparent Shapes are not attempted to be drawn [Eon]
 #clSegment
 HOOK @ $80041130
 {

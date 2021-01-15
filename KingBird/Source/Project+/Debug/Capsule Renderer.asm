@@ -1,5 +1,9 @@
-Draw Capsule [Eon, Masahiro Sakurai, Unpaid intern 3]
+Draw Capsules/Spheres [Eon]
+#clSphere/clCapsule
+
 #DisplayBubble(Double Radius, Float[3][4] ScaleMatrix, Float[3] Pos1, Float[3] Pos2, Byte[4] Colour1, Byte[4] Colour2, Float[3][4] ViewingMatrix)
+#function based *heavily* on melee debug mode capsule objects,
+#uses supplementary data.debug file to have capsule object pre-calculated so only matrix transformations need to be applied
 .macro callFunc(<addr>) 
 {
 .alias temp_Hi = <addr> / 0x10000
@@ -670,7 +674,7 @@ end:
 }
 
 
-Capsule 
+display/[clCapsule] [Eon] 
 HOOK @ $8070d2a8
 {
 	stwu r1, -0x20(r1)
@@ -710,7 +714,7 @@ HOOK @ $8070d2a8
 	addi r1, r1, 0x20
 	blr
 }
-Sphere 
+display/[clSphere] [Eon]
 HOOK @ $8070de4c
 {
 	stwu r1, -0x50(r1)

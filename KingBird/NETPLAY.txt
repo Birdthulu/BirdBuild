@@ -1,5 +1,5 @@
 ############################################################################
-# Project+ RSBE01.txt    						   #
+# Project+ NETPLAY.txt    						   #
 #                        						   #
 # Requires GCTRealMate and the source folder provided to assemble the GCT! #
 #									   #
@@ -10,7 +10,11 @@
 # or simply add them to there, directly. To disable one, simply place an   #
 # exclamation point in front of the name of that code! Enjoy Project+!!	   #
 ############################################################################
-
+# Netplay Codeset Differences: 
+#
+# NETBOOST.GCT is loaded instead of BOOST.GCT (see bottom of codeset)
+# "Source/Netplay/Net-CodeMenu.asm" is loaded instead of "Source/Project+/CodeMenu.asm"
+#
 #############################################################################
 ######################          Backend Codes          ######################
 #############################################################################
@@ -712,7 +716,7 @@ end:
 
 .include Source/Project+/Articles.asm
 .include Source/Project+/Boss.asm
-.include Source/Project+/CodeMenu.asm
+.include Source/Netplay/Net-CodeMenu.asm	# Different Code Menu from normal!
 .include Source/Project+/CompressPAC.asm
 .include Source/Project+/FilePatchCode.asm
 .include Source/Project+/IndependentSub.asm
@@ -3207,5 +3211,5 @@ Alloys Can Shield, Dodge & Grab Ledges [ds22]
 
 .include Source/Project+/Debug/modifiedDebug.asm
 
-
-.include Source/Project+/MultiGCT.asm		# MAKE SURE THIS IS AT THE VERY BOTTOM OF THIS CODESET!!!
+# THIS IS DIFFERENT FROM IN THE NORMAL RSBE01.TXT!!!
+.include Source/Netplay/Net-MultiGCT.asm	# MAKE SURE THIS IS AT THE VERY BOTTOM OF THIS CODESET!!!
