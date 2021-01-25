@@ -64,11 +64,12 @@ eventMatch:
   bne co_op_event		# /
 single_event:
   cmpwi r12,  4;	beq- single_L	# Event Match  4 (A Skyworld Engagement), load Brawl Skyworld
-  cmpwi r12,  9;	beq- single_Y	# Event Match  9 (Clash of Swords), load Castle Siege Brawl
+  cmpwi r12,  9;	beq- single_X	# Event Match  9 (Clash of Swords), load Castle Siege Brawl
   cmpwi r12, 17;	beq- single_L	# Event Match 17 (Brisk Expedition), load Summit (Infinite Glacier's L-alt)
   cmpwi r12, 19;	beq- single_Y	# Event Match 19 (Metal Battle in Metal Cavern), load Metal Cavern 64
+  cmpwi r12, 26;	beq- single_Y	# Event Match 26 (Carefree Concert), load K.K. Smashville
   cmpwi r12, 33;	beq- single_L	# Event Match 33 (Advent of the Evil King), loads Ganon's Castle (Hyrule Castle's L-alt)
-  cmpwi r12, 38;	beq- single_Y	# Event Match 38 (The Wolf Hunts The Fox), load tilting version of Lylat
+  cmpwi r12, 38;	beq- single_X	# Event Match 38 (The Wolf Hunts The Fox), load tilting version of Lylat
   cmpwi r12, 41;	beq- single_R	# Event Match 41 (The FINAL final battle), loads PM Final Destination
   b single_default
 co_op_event:
@@ -102,6 +103,8 @@ single_R:
   li r0, 0x20;  b single
 single_Y:	# Only forced in event match contexts
   li r0, 0x800; b single
+single_X:
+  li r0, 0x400; b single
 single_default:
   li r0, 0x0;	b single
 replay:

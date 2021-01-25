@@ -1954,6 +1954,23 @@ CODE @ $80882C84
     stfs f1, 0x10(r3)    # / 
 }
 
+#################################################
+Change Subaction Pass Frame also Passes FSM [Eon]
+#################################################
+HOOK @ $80724224
+{
+    fmr f31, f1
+
+    #getRate
+    lwz r12, 0x0(r24)
+    mr r3, r24
+    lwz r12, 0x20(r12)
+    mtctr r12
+    bctrl 
+    #set as passed frame speed 
+    fmr f30, f1
+}
+
 .include Source/ProjectM/Damage.asm
 .include Source/ProjectM/DirectionalInfluence.asm
 .include Source/ProjectM/DirectionalInput.asm
@@ -1961,7 +1978,6 @@ CODE @ $80882C84
 .include Source/ProjectM/Grab.asm
 .include Source/ProjectM/Knockback.asm
 .include Source/ProjectM/Ledge.asm
-.include Source/ProjectM/Modifier/Animation.asm
 .include Source/ProjectM/Modifier/Hitlag.asm
 .include Source/ProjectM/Modifier/Physics.asm
 .include Source/ProjectM/Modifier/Reflect.asm
