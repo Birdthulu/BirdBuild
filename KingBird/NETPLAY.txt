@@ -1,10 +1,10 @@
 ############################################################################
-# Project+ NETPLAY.txt    						   #
-#                        						   #
+# Project+ NETPLAY.txt    						                           #
+#                        						                           #
 # Requires GCTRealMate and the source folder provided to assemble the GCT! #
-#									   #
+#									                                       #
 # GCTconvert codes are compatible, if you want to add your own codes, go   #
-# into Source/Extra/More.asm to add additional codes!			   #
+# into Source/Extra/More.asm to add additional codes!			           #
 # If you wish to keep your new codes organized, you can also summon        #
 # separate text files by using .include Source/<filename> within more.asm, #
 # or simply add them to there, directly. To disable one, simply place an   #
@@ -14,7 +14,11 @@
 #
 # NETBOOST.GCT is loaded instead of BOOST.GCT (see bottom of codeset)
 # "Source/Netplay/Net-CodeMenu.asm" is loaded instead of "Source/Project+/CodeMenu.asm"
-#
+############################################################################
+# 									                                       #
+# NOTE: This file is very close to its limit! Adding codes to BOOST.txt is #
+# recommended to not have the build fail to load on console!		       #
+#		                                                                   #
 #############################################################################
 ######################          Backend Codes          ######################
 #############################################################################
@@ -721,7 +725,6 @@ end:
 .include Source/Project+/FilePatchCode.asm
 .include Source/Project+/IndependentSub.asm
 .include Source/Project+/Memory.asm
-.include Source/Project+/PSA.asm
 .include Source/Project+/TrainingMode.asm
 .include Source/Project+/VictoryCamera.asm
 
