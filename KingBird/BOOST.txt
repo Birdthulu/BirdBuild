@@ -10,6 +10,7 @@ op blt- 0x34	   @ $8018CFC8
 .include Source/Project+/CustomRequirements.asm
 .include Source/Project+/Shake.asm
 
+.include Source/Project+/PSA.asm
 .include Source/ProjectM/Constants.asm
 .include Source/ProjectM/PSA/Effects.asm
 .include Source/ProjectM/PSA/Misc.asm
