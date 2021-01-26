@@ -76,9 +76,7 @@ co:
 	addi r1, r1, 0x30 
 	li r30,0xBD 			#set current player action to death
 end:
-	cmpwi r25,0x14
-	bne ssdfc 				#branches to skip stamina dead flags clear if not beginning or end of match
-	stw r7,0(r12) 			#clears stamina dead flags for all players
+
 ssdfc:
 	stw r30,52(r29) 		#original instruction at hooked address
 }
@@ -153,13 +151,28 @@ op nop @ $8083BAE0 #disable red flash from being dead.
 * 896CF37E 2C0B0001
 * 40820008 981E0048
 * 60000000 00000000
-* C26CF1B4 00000006
-* 80640004 3D809018
-* 898CF378 2C0C0002
-* 40820018 2C000012
-* 40820010 5463C23E
-* 5463402E 60630028
-* 60000000 00000000
+#start/[scMelee]
+HOOK @ $806CF1B4
+{
+loc_0x0:
+  lwz r3, 4(r4)
+  lis r12, 0x9018
+  lbz r12, -3208(r12)
+  cmpwi r12, 0x2
+  bne- loc_0x28
+  cmpwi r0, 0x12
+  bne- loc_0x28
+  li 0, 0
+  lis r12,0x8058
+  ori r12,r12,0x82AC
+  stw r0, 0(r12) 			#clears stamina dead flags for all players
+
+  rlwinm r3, r3, 24, 8, 31
+  rlwinm r3, r3, 8, 0, 23
+  ori r3, r3, 0x28
+
+loc_0x28:
+}
 * 046DF124 48000018
 
 

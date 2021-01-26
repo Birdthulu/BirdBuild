@@ -217,3 +217,60 @@ CODE @ $80fc27d0
 }
 
 
+#following codes all based on removal of Animation Engine
+CaptureJump FSM in PSA [Eon]
+.alias PSA_Off 	= 0x8054C2D0
+CODE @ $8054C2D0
+{
+	word 2; word PSA_Off+0x10
+	word 1; scalar 1.66666
+	
+	word 0x04070200; word PSA_Off+0x8 #multiply frame speed by 1.6666
+	word 0x00000000; word 0
+}
+CODE @ $80FB06D4
+{
+	word 0x00090100; word PSA_Off 
+}
+PassiveCeil FSM in PSA [Eon]
+.alias PSA_Off 	= 0x8054C2F0
+CODE @ $8054C2F0
+{
+	word 2; word PSA_Off+0x10
+	word 1; scalar 1.3
+	
+	word 0x04070200; word PSA_Off+0x8 #multiply frame speed by 1.6666
+	word 0x00000000; word 0
+}
+CODE @ $80FB599C
+{
+	word 0x00090100; word PSA_Off 
+}
+SmashSwingItemWindup FSM in PSA [Eon]
+.alias PSA_Off 	= 0x8054C310
+CODE @ $8054C310
+{
+	word 2; word PSA_Off+0x10
+	word 1; scalar 1.4137932
+	
+	word 0x04070200; word PSA_Off+0x8 #multiply frame speed by 1.6666
+	word 0x00000000; word 0
+}
+CODE @ $80FC2E50
+{
+	word 0x00090100; word PSA_Off 
+}
+Unknown Special Jump FSM in PSA [Eon]
+.alias PSA_Off 	= 0x8054C330
+CODE @ $8054C330
+{
+	word 2; word PSA_Off+0x10
+	word 1; scalar 1.5
+	
+	word 0x04070200; word PSA_Off+0x8 #multiply frame speed by 1.6666
+	word 0x00000000; word 0
+}
+CODE @ $80FBCDD4
+{
+	word 0x00090100; word PSA_Off 
+}

@@ -489,7 +489,7 @@ loc_0x14:
 }
 HOOK @ $806E29D0		# Character trophy to load for Classic
 {
-  cmpwi r28, 0x2D;  ble+ GotTrophy	# Slots above 2D (Wario-Man) default to Trophy 01 (Mario)?
+  cmpwi r28, 0x2B;  ble+ GotTrophy
   li r29, Mewtwo_Trophy;  cmpwi r28, Mewtwo_Slot;  beq+ GotTrophy	# If it's Mewtwo's PM slot
   li r29, Roy_Trophy; 	  cmpwi r28, Roy_Slot;	   beq+ GotTrophy	# If it's Roy's PM slot
   li r29, Knuckles_Trophy;cmpwi r28, Knuckles_Slot;beq+ GotTrophy	# if it's Knuckles' P+ slot 
@@ -501,7 +501,7 @@ GotTrophy:
 }
 HOOK @ $806E47D8	# Character trophy to load for All-Star 
 {
-  cmpwi r4, 0x2D;  ble+ GotTrophy	# Slots above 2D (Wario-Man) default to Trophy 5D (Mario Finale)?
+  cmpwi r4, 0x2B;  ble+ GotTrophy
   li r26, Mewtwo_Trophy;  cmpwi r4, Mewtwo_Slot;   beq+ GotTrophy	# If it's Mewtwo's PM slot
   li r26, Roy_Trophy; 	  cmpwi r4, Roy_Slot;	   beq+ GotTrophy	# If it's Roy's PM slot
   li r26, Knuckles_Trophy;cmpwi r4, Knuckles_Slot; beq+ GotTrophy	# if it's Knuckles' P+ slot 
@@ -513,8 +513,8 @@ GotTrophy:
 }
 HOOK @ $806C1480
 {
-  cmpwi r29, 0x2D;  blt+ loc_0xC	# If the instance slot is higher than Wario-Man's, default to Mario?
-  li r29, 0x1						# This is 1 for Mario instead of 0 because it adds 1 before this code hooks
+  cmpwi r29, 0x30;  blt+ loc_0xC
+  li r29, 0x1
 loc_0xC:
   mr r30, r29
 }
