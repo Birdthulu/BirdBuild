@@ -28,7 +28,7 @@ op mr r4, r30 @ $8087462C
 op mr r3, r30 @ $80874654
 
 
-Airdodge Momentum Calculated on Airdodge Entry [Eon]
+Airdodge Momentum Calculated on Airdodge Entry v1.1 [Eon]
 
 .macro getInt(<id>)
 {
@@ -89,19 +89,62 @@ HOOK @ $80884F38
 	%ModuleCmd(0x5C, 0x48) #ftControllerModule.getStickX
 	lfs f2, 0x10(r1) #load 0 into f2
     fcmpo cr0, f1, f2
-    bne calcSpeed
+    bne calcTotalSpeed
 	%ModuleCmd(0x5C, 0x50) #ftControllerModule.getStickY
 	lfs f2, 0x10(r1)
     fcmpo cr0, f1, f2
     beq storeSpeed
-calcSpeed:
+calcTotalSpeed:
     %ModuleCmd(0x5C, 0x58) #ftControllerModule.getStickAngle
     stfs f1, 0x18(r1)
+    
+    %ModuleCmd(0x5C, 0x48) #ftControllerModule.getStickX
+    stfs f1, 0x1C(r1)
+    %ModuleCmd(0x5C, 0x50) ##ftControllerModule.getStickX
+    lfs f2, 0x1C(r1)
+    fmuls f1, f1, f1
+    fmuls f2, f2, f2
+    fadds f1, f1, f2 #f1 = x^2 + y^2
+    stfs f1, 0x1C(r1)
+    #rsqrte(f1) = 1/sqrt(mag^2)
+    lis r12, 0x8003
+    ori r12, r12, 0xDB58
+    mtctr r12
+    bctrl
+    lfs f2, 0x1C(r1)
+    fmuls f1, f1, f2 #mag^2/sqrt(mag^2) = mag
+    #1.12
+    lis r0, 0x3FA3
+    ori r0, r0, 0xD70A
+    stw r0, 0x1C(r1)
+    lfs f2, 0x1C(r1)
+    fmuls f1, f1, f2 #mag = mag*1.12
+
+    #1.0
+    lis r0, 0x3F80
+    stw r0, 0x1C(r1)
+    lfs f2, 0x1C(r1) 
+    fcmpo cr0, f1, f2 #if mag < 1, continue
+    blt 0x8
+clamp:
+    fmr f1, f2 #else clamp mag to 1
+setSpeed:
     #3.1
 	lis r0, 0x4046
 	ori r0, r0, 0x6666
     stw r0, 0x1C(r1)
+    lfs f2, 0x1C(r1)
+    fmuls f1, f1, f2 #mag = mag*3.1
+    stfs f1, 0x1C(r1)
+#    blt calcSpeeds #test purposes, plays a sound effect if max distance airdodge is performed
+#    li r5, 1
+#    li r6, 1
+#    li r7, 0
+#    li r4, 0x1f92 
+#    %ModuleCmd(0x50, 0x1C)
+calcSpeeds:
     #3.1*cos(theta) = x component
+    lfs f1, 0x18(r1)
     lis r12, 0x8040
     ori r12, r12, 0x04D8
     mtctr r12 
@@ -125,23 +168,6 @@ calcSpeed:
     lfs f2, 0x1C(r1)
     fmuls f1, f1, f2
     stfs f1, 0x14(r1)
-	#original code did 
-	#stickx *= 1.28
-	#sticky *= 1.28
-	#getStickMag through squares into frsqrte
-	#if inverseMag >= 1, store stick values straight into place, storing 0,0 i think
-	#if inversemag < 1, 
-	#	stickx *= inverseMag
-	#	sticky *= inverseMag
-	#	if stickX > 1, clamp to 1
-	#	if stickY > 1, clamp to 1
-	#	if stickX < -1, clamp to -1
-	#	if stickY < -1, clamp to -1
-	#storex
-	#storey
-    #
-    #if we want to do that to match pm airdodges perfectly
-
 storeSpeed:	
     
     #set Air/Ground state : 0x12, disables air resistance and speed cap, overrides any action state flag there would have been, sorry
