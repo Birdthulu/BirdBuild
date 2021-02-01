@@ -20,9 +20,9 @@ SquirtleModule:
 ModuleNameSkip:
 	.RESET
 
-################################
-Independent Pokemon for Subspace
-################################
+######################################
+Independent Pokemon for Subspace [Eon]
+######################################
 HOOK @ $800af80c
 {
 squirtCheck:
