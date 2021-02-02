@@ -64,3 +64,6 @@ op li r3, 0x20 @ $806Ec478 #SetSquirtle
 
 op li r19, 0x1E @ $806dae70
 op li r19, 0x20 @ $806daec0
+
+#also requires a module edit to sora_adv_stage.rel, nop 4 commands at 0x187F0
+#and a custom stage file for the great maze PT fight is included that fixes the enemy loaded to Charizard

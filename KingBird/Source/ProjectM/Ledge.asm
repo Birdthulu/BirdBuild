@@ -140,9 +140,9 @@ loc_0x90:
   	addi r1, r1, 0x18
 }
 
-###########################################################################################################################
-[Project+] Tethers Can't Edgehog or Be Edgehogged v1.3 (P+ : Nana Occupies ledge during Up-b and ZSS Up-b fix) [Magus, Eon]
-###########################################################################################################################
+###################################################################################################################################
+[Project+] Tethers Can't Edgehog or Be Edgehogged v1.4 (P+ : Nana Occupies ledge during Up-b and ZSS/Ivysaur Up-b fix) [Magus, Eon]
+###################################################################################################################################
 HOOK @ $80112DBC
 {
 	stw r4, 0x10(r2)
@@ -232,10 +232,13 @@ zssCheckUpbFrame:
   b CommonActionsCheck
   
 
-
 ivysaurCheck:
-	cmpwi CurrentAction, 0x114;  beq- LedgeFree
-
+	cmpwi CurrentAction, 0x114;  bne CommonActionsCheck
+  	lis r24, 0x41A0   // 20.0 float
+  	stw r24, 0x40(r1)
+  	lfs f17, 0x40(r1)
+  	fcmpu, 0, CurrentFrame, f17
+  	blt LedgeFree
 
 CommonActionsCheck:
 	cmpwi CurrentAction, 0x7F;  blt- CommonActionsCheck2
