@@ -1778,6 +1778,7 @@ skip:
   li r3, 1
 }
 
+
 ##############################################################
 [Project+] DK Cargo Uses default Grab Hold time reduction per frame [Eon]
 ##############################################################
@@ -1974,7 +1975,7 @@ HOOK @ $80724224
     ble %end% #if new speed <= 0, don't pass it
     #set as passed frame speed 
     fmr f30, f1
-}
+} 
 
 .include Source/ProjectM/Damage.asm
 .include Source/ProjectM/DirectionalInfluence.asm

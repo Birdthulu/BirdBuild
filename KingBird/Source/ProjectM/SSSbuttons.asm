@@ -45,7 +45,7 @@ noSecondBell:
 	ori r5, r5, 0x6000
 	lbz r5, 0x0(r5)
 	cmpw r4, r5;	beq dontRefresh
-	
+
 	stb r5, -0x1(r25)
 	li r24, 0x2				# Set that we are striking all stages not on this page or 
 	lbz r23, 0x230(r29)
