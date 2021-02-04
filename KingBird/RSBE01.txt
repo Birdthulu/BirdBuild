@@ -1956,9 +1956,9 @@ CODE @ $80882C84
     stfs f1, 0x10(r3)    # / 
 }
 
-#################################################
-Change Subaction Pass Frame also Passes FSM [Eon]
-#################################################
+########################################################
+Change Subaction Pass Frame also Passes FSM v 1.1 [Eon]
+########################################################
 HOOK @ $80724224
 {
     fmr f31, f1
@@ -1969,6 +1969,9 @@ HOOK @ $80724224
     lwz r12, 0x20(r12)
     mtctr r12
     bctrl 
+    fsubs f0, f1, f1
+    fcmpo cr0, f1, f0
+    ble %end% #if new speed <= 0, don't pass it
     #set as passed frame speed 
     fmr f30, f1
 }
@@ -1985,13 +1988,6 @@ HOOK @ $80724224
 .include Source/ProjectM/Modifier/Reflect.asm
 .include Source/ProjectM/Modifier/ThrowRelease.asm
 .include Source/ProjectM/Modifier/VariableSet.asm
-
-.include Source/Project+/CStick.asm
-.include Source/Project+/LedgeGrab.asm
-.include Source/Project+/ScreenKO.asm
-.include Source/Project+/Timeout.asm
-.include Source/Project+/UCF.asm
-
 
 #############################################################################
 ########################          UI Codes          #########################
@@ -2739,6 +2735,88 @@ float Infinite @ $80B88738
 Spacies Up-B Air Friction Fix [Magus]
 #########################################
 * 04A1B848 FC000850
+
+###########################
+Falco Low Laser Fix [Eon]
+###########################
+HOOK @ $80a5d1b4
+{
+  lwz r3, 0xD8(r29)
+  lwz r3, 0x14(r3)
+  lwz r12, 0x0(r3)
+  lwz r12, 0x18(r12)
+  mtctr r12
+  bctrl 
+  cmpwi r3, 2
+  bne orig 
+
+  #getPos
+  addi r3, r1, 0x20 
+  lwz r4, 0xD8(r29)
+  lwz r4, 0xC(r4)
+  lwz r12, 0x0(r4)
+  lwz r12, 0x18(r12)
+  mtctr r12
+  bctrl 
+  #getPrevPos
+  addi r3, r1, 0x2C 
+  lwz r4, 0xD8(r29)
+  lwz r4, 0xC(r4)
+  lwz r12, 0x0(r4)
+  lwz r12, 0x20(r12)
+  mtctr r12
+  bctrl 
+  lfs f1, 0x24(r1) #currY 
+  lfs f2, 0x30(r1) #prevY 
+  fsubs f1, f1, f2 #currY - prevY 
+  lfs f2, 0xC(r1)
+  fsubs f1,f2,f1   #position - changeInPos = newPosition
+  stfs f1, 0xC(r1)
+
+orig:
+  lfs f0, -0x1930(r27)
+}
+
+#########################
+Fox Low Lasers Fix [Eon]
+#########################
+HOOK @ $80A297B4
+{
+  lwz r3, 0xD8(r29)
+  lwz r3, 0x14(r3)
+  lwz r12, 0x0(r3)
+  lwz r12, 0x18(r12)
+  mtctr r12
+  bctrl 
+  cmpwi r3, 2
+  bne orig 
+
+  #getPos
+  addi r3, r1, 0x20 
+  lwz r4, 0xD8(r29)
+  lwz r4, 0xC(r4)
+  lwz r12, 0x0(r4)
+  lwz r12, 0x18(r12)
+  mtctr r12
+  bctrl 
+  #getPrevPos
+  addi r3, r1, 0x2C 
+  lwz r4, 0xD8(r29)
+  lwz r4, 0xC(r4)
+  lwz r12, 0x0(r4)
+  lwz r12, 0x20(r12)
+  mtctr r12
+  bctrl 
+  lfs f1, 0x24(r1) #currY 
+  lfs f2, 0x30(r1) #prevY 
+  fsubs f1, f1, f2 #currY - prevY 
+  lfs f2, 0xC(r1)
+  fsubs f1,f2,f1   #position - changeInPos = newPosition
+  stfs f1, 0xC(r1)
+
+orig:
+  lfs f0, -0x1D40(r27)
+}
 
 #######################################################
 Ignore Ganon Neutral-B Air Mobility Coding [Magus]

@@ -233,8 +233,8 @@ Clone Victory Music [ds22]
 op lis r3, 0x8058		@ $800E6B4C
 op addi r3, r3, 0x5EF0	@ $800E6B54
 op li r0, 0x1C 			@ $800E6B58
-int 0x284D @ $80408988
-int[5] 0xFF26, 0xFF27, 0xFF2D, 0x284D, 0x2844 @ $80585FBC
+int 0xFF27 @ $80408988
+int[5] 0xFF26, 0x284D, 0xFF2D, 0x284D, 0x2844 @ $80585FBC
 #0xFF26 (Mewtwo), 0xFF27 (Roy), 0xFF2D (Knuckles)
 
 ############################

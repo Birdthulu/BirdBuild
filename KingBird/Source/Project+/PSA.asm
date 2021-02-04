@@ -274,3 +274,16 @@ CODE @ $80FBCDD4
 {
 	word 0x00090100; word PSA_Off 
 }
+
+Tether fail passes frame but dont pass FSM [Eon]
+.alias PSA_Off 	= 0x8054C360
+CODE @ $80FC2D10
+{
+	word 0x04000300; word PSA_Off
+}
+CODE @ $8054C360
+{
+	word 5; RA_Basic 2
+	word 3; word 1
+	word 1; scalar 1.0
+}
