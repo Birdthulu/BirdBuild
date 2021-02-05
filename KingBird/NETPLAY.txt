@@ -1780,6 +1780,7 @@ skip:
   li r3, 1
 }
 
+
 ##############################################################
 [Project+] DK Cargo Uses default Grab Hold time reduction per frame [Eon]
 ##############################################################
@@ -1788,7 +1789,7 @@ HOOK @ $8089156c
   lis r12, 0x80B8
   ori r12, r12, 0x84A8
   lfs f2, 0(r12)
-}
+} 
 
 ###################################################################
 [Project+] Grabbed Opponents face opposite way from grabber [Eon]

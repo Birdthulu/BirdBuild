@@ -9,7 +9,6 @@ op blt- 0x34	   @ $8018CFC8
 .include Source/Netplay/Net-StageFiles.asm		# This file is different from the regular BOOST.txt!
 .include Source/Project+/CustomRequirements.asm
 .include Source/Project+/Shake.asm
-
 .include Source/Project+/CStick.asm
 .include Source/Project+/LedgeGrab.asm
 .include Source/Project+/ScreenKO.asm
