@@ -1299,7 +1299,7 @@ byte 21 @ $806B92A4 # Page 2
 byte 17 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
-byte 58 @ $800AF673 # Stage Count
+byte 59 @ $800AF673 # Stage Count
 
 op lis r4, 0x8049 		@ $800AF58C
 op lwz r4, 0x5D00(r4)	@ $800AF594
