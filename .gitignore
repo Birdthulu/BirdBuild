@@ -1,14 +1,8 @@
-# Custom for Project-N
-Dolphin/
-Utilities/
-Release/
+# Custom for Bird Build
+KingBird/codeset.txt
+KingBird/log.txt
 *.gct
 *.thp
-Build/Project+/codeset.txt
-Build/Project+/log.txt
-"Other Dev Tools/Tracklists/*.tlst"
-"Other Dev Tools/Slots/*.asl"
-"Other Dev Tools/Parameters/*.param"
 
 # Created by https://www.gitignore.io/api/linux,macos,windows,notepadpp
 # Edit at https://www.gitignore.io/?templates=linux,macos,windows,notepadpp
