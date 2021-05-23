@@ -3,7 +3,9 @@
 # -it points to Netplay/Net-MyMusic.asm instead of Project+/MyMusic.asm
 # -string "/sound/tracklist/" -> "/sound/netplaylist/"
 # string "stageinfo/" -> string "stageinfodubs/"
+# string "stageslot/" -> string "stageslotdubs/"
 # lwz r6, -0x14(r12) # "stageinfo/" -> lwz r6, -0x14(r12) # "stageinfodubs/"
+# lwz r6, -0x18(r12) # "stageslot/" -> lwz r6, -0x18(r12) # "stageslotdubs/"
 #
 #################################
 Stage File System Neo [DukeItOut]
@@ -35,7 +37,7 @@ FileFormatSetup:
 FileNameFolder:
 	string "/stage/"
 FileNameLocation:
-	string "stageslot/"
+	string "stageslotdubs/"
 FileNameLocation2:
 	string "stageinfodubs/"	
 FileNameLocation3:
@@ -481,7 +483,7 @@ CODE @ $8053E000
 	addi r3, r1, 0x90
 	lwz r4, -0x20(r12)		# "%s%s%02X%s"
 	lwz r5, -0x1C(r12)		# "/stage/"
-	lwz	r6, -0x18(r12)		# "stageslot/" 
+	lwz	r6, -0x18(r12)		# "stageslotdubs/" 
 	lwz	r8, -0x10(r12)		# ".asl"
 	lis r12, 0x803F			# \
 	ori r12, r12, 0x89FC	# | Create the filename string
