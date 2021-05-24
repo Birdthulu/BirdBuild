@@ -1257,55 +1257,48 @@ CODE @ $800B91C8
 .GOTO->SkipStageTables
 
 TABLE_1:
-	byte[21] |
-0x24, | # Peach's Castle
-0x0E, | # Lylat Cruise
-0x0C, | # Yoshi's Island
-0x05, | # Bowser's Castle
-0x21, | # Golden Temple
-0x1E, | # Sky Sanctuary Zone
-0x09, | # Hyrule Castle
-0x14, | # Castle Siege
-0x15, | # Wario Land
-0x18, | # Fountain of Dreams
+	byte[11] |
+0x12, | # Subspace Plains
 0x01, | # Final Destination
-0x04, | # Metal Cavern
-0x23, | # Dream Land
+0x1E, | # Mementos
+0x08, | # Pirate Ship
+0x17, | # Bridge of Eldin
+0x15, | # Wario Land
 0x0A, | # Metroid Lab
-0x20, | # Yoshi's Story
-0x1C, | # Green Hill Zone
 0x1A, | # Smashville
 0x00, | # Battlefield
 0x28, | # Pokemon Stadium 2
-0x02, | # Delfino's Secret
-0x16  | # Distant Planet
+0x05  | # Molgera's Lair
 
 TABLE_2:
-	byte[21] |
-0x12, | # Infinite Glacier
+	byte[24] |
+0x24, | # Peach's Castle
 0x1B, | # Shadow Moses Island
 0x06, | # Kongo Jungle
 0x19, | # Fourside
 0x22, | # Onett
 0x26, | # Big Blue
-0x11, | # Port Town Aero Dive
+0x0E, | # Lylat Cruise
 0x13, | # Flat Zone 2
 0x03, | # Luigi's Mansion
 0x07, | # Rumble Falls
 0x25, | # Corneria
 0x27, | # Brinstar
 0x1F, | # Temple
-0x08, | # Pirate Ship
+0x0C, | # Yoshi's Island
 0x2B, | # Training Room
 0x10, | # Spear Pillar
 0x0F, | # Saffron City
 0x0D, | # Halberd
 0x0B, | # Frigate Orpheon
-0x17, | # Skyworld
-0x1D  | # PictoChat
+0x14, | # Castle Siege
+0x1D, | # PictoChat
+0x04, | # Metal Cavern
+0x23, | # Dream Land
+0x20  | # Yoshi's Story
 
 TABLE_3:
-	byte[17] |
+	byte[24] |
 0x31, | # Dinosaur Land
 0x2D, | # Mario Circuit
 0x38, | # Mushroom Kingdom
@@ -1322,7 +1315,14 @@ TABLE_3:
 0x37, | # Venus Lighthouse
 0x2C, | # Dracula's Castle
 0x30, | # Dead Line
-0x3A  | # Subspace
+0x3A, | # Subspace
+0x21, | # Golden Temple
+0x09, | # Hyrule Castle
+0x18, | # Fountain of Dreams
+0x11, | # Port Town Aero Dive
+0x1C, | # Green Hill Zone
+0x02, | # Delfino's Secret
+0x16  | # Distant Planet
 
 TABLE_4:	# Unused
 TABLE_5:	# Unused
@@ -1353,13 +1353,12 @@ half[61] |	# Stage Count + 2
 SkipStageTables:
 .RESET
 
-byte 21 @ $806B929C # Page 1
-byte 21 @ $806B92A4 # Page 2
-byte 17 @ $80496002 # Page 3
+byte 11 @ $806B929C # Page 1
+byte 24 @ $806B92A4 # Page 2
+byte 24 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
 byte 59 @ $800AF673 # Stage Count
-
 op lis r4, 0x8049 		@ $800AF58C
 op lwz r4, 0x5D00(r4)	@ $800AF594
 op lis r4, 0x8049		@ $800AF614
@@ -1370,3 +1369,23 @@ op lis r4, 0x8049		@ $800AF6A0
 op lwz r4, 0x5D00(r4)	@ $800AF6A8
 op lis r4, 0x8049		@ $800AF6D8
 op lwz r4, 0x5D00(r4)	@ $800AF6E0
+
+Load alt sc_selcharacte2, sc_selma2, sc_selcharacter3 and mu_menumai2 [Bird]
+* 04055458 60000000
+* 006FF3FF 00000070 #sc_selmap
+* 017F6384 00000070
+* 006FF31E 00000032 #sc_selcharacter2
+* 017F635C 00000032
+* 00570271 0000006E #mu_menumain
+* 017F62C6 0000006E
+* 006FF301 00000072 #sc_selcharacter
+* 017F6373 00000072
+* 006FF3FF 00000032 #sc_selma2
+* 017F6384 00000032
+* 006FF31E 00000033 #sc_selcharacter3
+* 017F635C 00000033
+* 00570271 00000032 #mu_menumai2
+* 017F62C6 00000032
+* 006FF301 00000032 #sc_selcharacte2
+* 017F6373 00000032
+* E0000000 80008000
