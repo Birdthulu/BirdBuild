@@ -1,9 +1,4 @@
 # Custom for Bird Build
-KingBird/pf/sound/netplaylist
-KingBird/Source/Netplay
-KingBird/pf/menu3/dnet.cmnu
-KingBird/NETPLAY.txt
-KingBird/NETBOOST.txt
 KingBird/codeset.txt
 KingBird/log.txt
 *.gct
