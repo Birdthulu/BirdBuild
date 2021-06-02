@@ -1259,8 +1259,8 @@ CODE @ $800B91C8
 TABLE_1:
 	byte[11] |
 0x12, | # Subspace Plains
-0x01, | # Final Destination
-0x1E, | # Mementos
+0x11, | # Port Town Aero Dive
+0x0F, | # Saffron City
 0x08, | # Pirate Ship
 0x17, | # Bridge of Eldin
 0x15, | # Wario Land
@@ -1288,7 +1288,7 @@ TABLE_2:
 0x0C, | # Yoshi's Island
 0x2B, | # Training Room
 0x10, | # Spear Pillar
-0x0F, | # Saffron City
+0x34, | # Bell Tower
 0x0D, | # Halberd
 0x0B, | # Frigate Orpheon
 0x14, | # Castle Siege
@@ -1309,7 +1309,7 @@ TABLE_3:
 0x36, | # Cookie Country
 0x39, | # WarioWare, Inc.
 0x3C, | # Poke Floats
-0x34, | # Bell Tower
+0x1E, | # Sky Sanctuary Zone
 0x35, | # Norfair
 0x2F, | # Hanenbow
 0x37, | # Venus Lighthouse
@@ -1319,7 +1319,7 @@ TABLE_3:
 0x21, | # Golden Temple
 0x09, | # Hyrule Castle
 0x18, | # Fountain of Dreams
-0x11, | # Port Town Aero Dive
+0x01, | # Final Destination
 0x1C, | # Green Hill Zone
 0x02, | # Delfino's Secret
 0x16  | # Distant Planet
