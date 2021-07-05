@@ -1,0 +1,1 @@
+Stagelist GCTs do not get added to RSBE01 / Boost GCTs. They are loaded by StagelistLooter.asm
