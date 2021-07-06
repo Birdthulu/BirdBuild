@@ -262,8 +262,35 @@ notMusic:
 pfmenu2 fixes (sc_title, mu_menumain & if_adv_mngr) [Dantarion]
 ###############################################################
 string "/menu2/sc_title.pac"     @ $806FF9A0
-string "/menu2/mu_menumain.pac"  @ $806FB248
 string "/menu2/if_adv_mngr.pac"  @ $80B2C7F8
+
+###############################################################
+Set menus based on Code Menu Stagelist setting [Bird]
+###############################################################
+* 264E0587 00000002 # If 804E0587 is less than 2
+string "/menu2/mu_menumain.pac"         @ $806FB248
+string "mu_menumain_en.pac"             @ $817F62BC
+string "/menu2/sc_selcharacter.pac"     @ $806FF2EC
+string "sc_selcharacter_en.pac"         @ $817F6365
+string "/menu2/sc_selcharacter2.pac"    @ $806FF308
+string "sc_selcharacter2_en.pac"        @ $817F634D
+string "/menu2/sc_selmap.pac"           @ $806FF3F0
+string "sc_selmap_en.pac"               @ $817F637C
+string "stageslot/"                     @ $80550C88
+string "stageinfo/"                     @ $80550C98
+* E0000000 80008000
+* 244E0587 00000001 # If 804E0587 is greater than 1
+string "/menu2/db_menumain.pac"         @ $806FB248
+string "db_menumain_en.pac"             @ $817F62BC
+string "/menu2/db_selcharacter.pac"     @ $806FF2EC
+string "db_selcharacter_en.pac"         @ $817F6365
+string "/menu2/db_selcharacter2.pac"    @ $806FF308
+string "db_selcharacter2_en.pac"        @ $817F634D
+string "/menu2/db_selmap.pac"           @ $806FF3F0
+string "db_selmap_en.pac"               @ $817F637C
+string "stageslotdubs/"                 @ $80550C88
+string "stageinfodubs/"                 @ $80550C98
+* E0000000 80008000
 
 ##############################################################################################################################
 [Bird, Project+] RSBE v1.30 (/KingBird/pf/sfx, can load soundbank clones for stages) (requires CSSLE) [InternetExplorer, DukeItOut]
