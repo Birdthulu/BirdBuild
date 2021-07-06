@@ -48,19 +48,19 @@ StagelistRoot:
 CSERoot:
 	string "/KingBird/"	#This SD Root applies to BRSTMs. 
 FileNameFolder:		
-	string "/stage/"	#This is the prefix for FileNameLocation 1 and 2. SD Root is required for locations outside of the builds SD Root.
+	string "/KingBird/pf/stage/"	#This is the prefix for FileNameLocation 1 and 2. SD Root is required for locations outside of the builds SD Root.
 FileNameLocation:
 	string "stageslot/"
 FileNameLocation2:
 	string "stageinfo/"	
 FileNameLocation3: 		#This is where the Tracklist Configs are loaded from. SD Root and pf are required for locations outside of the builds SD Root.
-	string "/sound/tracklist/"
+	string "/sound/netplaylist/"
 FileNameLocation4:		
 	string "pf/sound/"
 StagePacPath:			#Do not change /STAGE/MELEE/. It needs to be all caps. If you edit STG, beware that there is a file legnth limit on the Stage Title.
 	string "/STAGE/MELEE/STG"
 StageModulePath:		#This is the path used by Stage Modules. SD Root and pf are required for locations outside of the builds SD Root.
-	string "DVD:/KingBird/pf/module/"
+	string "DVD:/module/"
 
 
 TABLE_1:
@@ -163,7 +163,6 @@ byte 17 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
 byte 59 @ $800AF673 # Stage Count
-
 
 PULSE       #Setup GCT Link Return
 {

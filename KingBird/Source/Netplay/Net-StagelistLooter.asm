@@ -83,21 +83,21 @@ StagelistCodesetStorage:
     word[8] |
     0, 0, 0, 0, 0, 0, 0, 0
 Stagelist1:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 Stagelist2:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 Stagelist3:
-    string "/stage/stagelist/DoublesStagelist.GCT"
+    string "/stage/stagelist/NetDoublesStagelist.GCT"
 Stagelist4:
-    string "/stage/stagelist/DoublesStagelist.GCT"
+    string "/stage/stagelist/NetDoublesStagelist.GCT"
 Stagelist5:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 Stagelist6:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 Stagelist7:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 Stagelist8:
-    string "/stage/stagelist/PMBRStagelist.GCT"
+    string "/stage/stagelist/NetPMBRStagelist.GCT"
 
 SelmapStorage:
     .BA<-SelmapStringStorage

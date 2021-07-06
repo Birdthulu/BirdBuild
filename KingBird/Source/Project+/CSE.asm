@@ -45,6 +45,8 @@
 .alias songFadeOutLength = 18
 .alias songFadeOutStartFrame = 12 
 .alias songFadeInDelay = 1
+.alias StagelistDataLocationHigh = 0x8049 #See StagelistLooter.asm
+.alias StagelistDataLocationLow = 0x5D3C
 
 op li r3, 2 @ $801C72DC
 HOOK @ $801C805C				# GetSoundType/[nw4r3snd6detail22SoundArchiveFileReaderCFUI]
@@ -432,8 +434,15 @@ doNotForce:
   ori r4, r4, 0xEFF4		# %s%s%s%s
   lis r5, 0x8059							# \ "sd:"
   ori r5, r5, 0xC568						# /
-  lis r6, 0x8040							# \ pointer to mod folder name
-  ori r6, r6, 0x6920						# /
+
+  #lis r6, 0x8040							# \ pointer to mod folder name
+  #ori r6, r6, 0x6920						# /
+
+  lis r6, StagelistDataLocationHigh			# \ pointer to mod folder name
+  lwz r6, StagelistDataLocationLow (r6)		# | This is changed to read from the loaded Stagelist file.
+  lwz r6, 0x1C (r6)							# /Load from CSE Root Location
+
+  
   lis r7, 0x8053							# \ "pf/sound/"
   ori r7, r7, 0xEFB4						# /
   lwz r7, 0(r7)

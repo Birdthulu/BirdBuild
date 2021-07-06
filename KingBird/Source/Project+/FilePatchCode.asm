@@ -1,6 +1,6 @@
-##############################
-[Bird] SD Root=/KingBird/
-##############################
+#############################
+[Project+] SD Root=/Project+/
+#############################
 string "/KingBird/" @ $80406920
 
 ##########################
@@ -26,7 +26,8 @@ op NOP				@ $8003CB28
 ##############################################################################################
 * E0000000 80008000
 * 225664EC 00000000
-
+    .alias StagelistDataLocationHigh = 0x8049 #See StagelistLooter.asm
+    .alias StagelistDataLocationLow = 0x5D3C
 # Chooses to read from the SD or DVD
 # Checks a string at 805A7C0C
 
@@ -37,8 +38,12 @@ CODE @ $805A7E00
 	addi r4, r1, 0x20
 	stwu r1, -0x180(r1)
 	stw r4, 0x8(r1)
-	lis r4, 0x8040		#\ Mod folder
-	ori r4, r4, 0x6920	#/
+
+  nop #Go to the end of the code, hook here. 805A7E10.
+  beq- finish #See Hook below. 
+  nop #A second hook point. If its a stage, ASL it to the Stagelist Root 805A7E18.
+	#lis r4, 0x8040		#\ Mod folder
+	#ori r4, r4, 0x6920	#/
 	addi r3, r1, 0x10
 	lis r12, 0x803F 
 	ori r12, r12, 0xA340
@@ -52,6 +57,8 @@ CODE @ $805A7E00
 	bctrl
 	li r5, 0x68
 	addi r4, r1, 0x10
+
+LoadFileSD:
 	addi r3, r1, 0x188	# original 0x8(r1) with the 0x180 offset
 	stw r4, 0x188(r1)	# Force a string redirect
 	stwu r1, -0x80(r1)
@@ -83,6 +90,87 @@ finish:
 	ori r12, r12, 0xC054
 	mtctr r12
 	bctr
+}
+
+HOOK @ $805A7E10
+{
+pfcheck:
+  lhz r3, 0xA (r4)  #Check for pf after SD root. If it has pf, it may already have the SD root setup.
+  li r12, 0x7066
+  cmpw r3, r12
+  bne- end
+stagelistcheck:     #This checks the Stagelist Root and SD root
+  lis r3, StagelistDataLocationHigh
+  lwz r3, StagelistDataLocationLow (r3)
+  lwz r3, 0xC (r3)
+  lwz r3, 0 (r3)
+  lwz r12, 0 (r4)
+  cmpw r3, r12
+  beq- RootExists
+	lis r3, 0x8040
+	lwz r3, 0x6920 (r3)
+  cmpw r3, r12
+  bne- end
+RootExists:
+  li r5, 0x68
+  stw r4, 0x8(r1)
+	addi r3, r1, 0x188	# original 0x8(r1) with the 0x180 offset
+	stw r4, 0x188(r1)	# Force a string redirect
+	stwu r1, -0x80(r1)
+	stmw r2, 0x8(r1)
+	lis r12, 0x8001				# \
+	ori r12, r12, 0xCBF4		# | Read from SD
+	mtctr r12					# |
+	bctrl						# |
+	mr r28, r3					# /
+	cmpwi r3, 0
+	bne LoadFromDVD
+	addi r1, r1, 0x80
+  li r12, 1
+	b end	
+LoadFromDVD:
+  lmw r2, 0x8(r1)
+	addi r1, r1, 0x80
+	lwz r4, 0x8(r1)			# Get filename
+	addi r3, r1, 0x1A0		# \ Revert parameter pointer to original string (0x20(r1))
+	stw r3, 0x188(r1)		# /
+	addi r3, r1, 0x188		# Original 0x8(r1) + 0x180 added
+
+  lwz r12, 0 (r3)       #When loading from a full path, there is no original.
+  addi r12, r12, 0xC    #To compensate, we recreate the original. Also i hate having all these lines.
+  stw r12, 0 (r3)
+
+	lis r12, 0x8001			# \
+	ori r12, r12, 0xC144	# | Read from DVD
+	mtctr r12				# |
+	bctrl					# |
+	mr r28, r3				# /
+  li r12, 1
+
+end:
+  cmpwi r12, 1
+}
+
+HOOK @ $805A7E18
+{
+  lwz r4, 0 (r4)      #Load beginning of string
+  lis r3, 0x2F53
+  ori r3, r3, 0x5441  #Set String "/STA"
+  cmpw r3, r4
+  bne- ReturnB
+  lwz r4, 0x8 (r1)
+  lwz r4, 6 (r4)      #Load where "/MEL" should be
+  lis r3, 0x2F4D
+  ori r3, r3, 0x454C  #Set String "/MEL"
+  bne- ReturnB
+ReturnA:
+  lis r4, StagelistDataLocationHigh    #\Load SDRoot from Stagelist.
+  lwz r4, StagelistDataLocationLow (r4)
+  lwz r4, 0xC (r4)
+  b %END%
+ReturnB:
+	lis r4, 0x8040		  #\ Base Mod folder
+	ori r4, r4, 0x6920	#/
 }
 
 # Related to setting parameters for file loading
@@ -119,8 +207,8 @@ op NOP @ $803D8C80
 * 065A7C0A 00000002	#
 * 70660000 00000000 # Adds "pf" ?!?
 
-* 80000001 805A7B00 # Also copies the mod name header to 805A7B00
-* 8A000A01 00000000	#
+#* 80000001 805A7B00 # Also copies the mod name header to 805A7B00
+#* 8A000A01 00000000 # Stagefiles.asm will copy this when it loads the tracklist file.
 
 # string "pf/sound/" @ $805A7B0A # Warning, commented out because the null terminator for the string breaks the filenames!
 * 065A7B0A 00000009				 #
@@ -262,17 +350,19 @@ notMusic:
 pfmenu2 fixes (sc_title, mu_menumain & if_adv_mngr) [Dantarion]
 ###############################################################
 string "/menu2/sc_title.pac"     @ $806FF9A0
-string "/menu2/mu_menumain.pac"  @ $806FB248
 string "/menu2/if_adv_mngr.pac"  @ $80B2C7F8
+string "/menu2/mu_menumain.pac"  @ $806FB248
 
 ##############################################################################################################################
-[Bird, Project+] RSBE v1.30 (/KingBird/pf/sfx, can load soundbank clones for stages) (requires CSSLE) [InternetExplorer, DukeItOut]
+[Project+] RSBE v1.30 (/Project+/pf/sfx, can load soundbank clones for stages) (requires CSSLE) [InternetExplorer, DukeItOut]
 ##############################################################################################################################
 * 80000000 80406920
 * 80000001 805A7D18
 address $805A7D18 @ $805A7D00
 string[2] "/KingBird/pf/sfx/%03X",".sawnd" @ $805A7D18
 * 045A7D10 919B6600		# What is this?
+    .alias StagelistDataLocationHigh = 0x8049 #See StagelistLooter.asm
+    .alias StagelistDataLocationLow = 0x5D3C
 HOOK @ $801C8370																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										
 {
   stwu r1, -0x80(r1)
@@ -307,11 +397,23 @@ HOOK @ $801C8370
   cmpwi r26, 0x77		# |Stage soundbanks are range 0x53-0x77	(really 0x4C-70)
   bgt+ NormalBank		#/
   
+  lis r3, StagelistDataLocationHigh     #\Load SD Root from Stagelist.asm. See Stagelist Looter for more information.
+  lwz r3, StagelistDataLocationLow (r3) #|
+  lwz r3, 0xC (r3)                      #/
+  lwz r4, 1 (r3)
+  stw r4, 0x25 (r1)
+  lwz r4, 5 (r3)
+  stw r4, 0x29 (r1)
+
   mr r4, r5				#
   lis r5, 0x5F00		# \ Concatenate "_"
   stw r5, 0x20(r1)		# /
+
+
   addi r4, r1, 0x20		#
   addi r3, r1, 0x24		# place the string character in r1+0x24
+
+
   lis r12, 0x803F		#
   ori r12, r12, 0xA384	# strcat
   mtctr r12				#
