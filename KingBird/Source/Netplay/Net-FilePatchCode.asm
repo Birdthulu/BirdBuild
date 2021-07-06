@@ -1,3 +1,4 @@
+# Set menus based on Code Menu Stagelist setting 057C -> 0587
 ##############################
 [Bird] SD Root=/KingBird/
 ##############################
@@ -267,7 +268,7 @@ string "/menu2/if_adv_mngr.pac"  @ $80B2C7F8
 ###############################################################
 Set menus based on Code Menu Stagelist setting [Bird]
 ###############################################################
-* 264E057C 00000002 # If 804E0587 is less than 2
+* 264E0587 00000002 # If 804E0587 is less than 2
 string "/menu2/mu_menumain.pac"         @ $806FB248
 string "mu_menumain_en.pac"             @ $817F62BC
 string "/menu2/sc_selcharacter.pac"     @ $806FF2EC
@@ -279,7 +280,7 @@ string "sc_selmap_en.pac"               @ $817F637C
 string "stageslot/"                     @ $80550C88
 string "stageinfo/"                     @ $80550C98
 * E0000000 80008000
-* 244E057C 00000001 # If 804E0587 is greater than 1
+* 244E0587 00000001 # If 804E0587 is greater than 1
 string "/menu2/db_menumain.pac"         @ $806FB248
 string "db_menumain_en.pac"             @ $817F62BC
 string "/menu2/db_selcharacter.pac"     @ $806FF2EC

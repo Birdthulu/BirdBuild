@@ -1,7 +1,8 @@
 ######################################################################################
 PMBR Stagelist [Bird]
+264E057F -> 264E0587
 ######################################################################################
-* 264E057C 00000002 # If 804E0587 is less than 2
+* 264E0587 00000002 # If 804E0587 is less than 2
 op mr r0, r4				@ $806B8F5C # Access stage location in table
 op lbzx r3, r3, r0			@ $806B8F64	# Entry variable is a byte, rather than a half
 op rlwinm r0, r3, 1, 0, 30	@ $800AF618	# Access stage to load
@@ -129,7 +130,7 @@ half[61] |	# Stage Count + 2
 
 SkipStageTables:
 .RESET
-* 264E057C 00000002 # If 804E0587 is less than 2
+* 264E0587 00000002 # If 804E0587 is less than 2
 byte 21 @ $806B929C # Page 1
 byte 21 @ $806B92A4 # Page 2
 byte 17 @ $80496002 # Page 3

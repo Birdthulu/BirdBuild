@@ -14,6 +14,8 @@
 #
 # NETBOOST.GCT is loaded instead of BOOST.GCT (see bottom of codeset)
 # "Source/Netplay/Net-CodeMenu.asm" is loaded instead of "Source/Project+/CodeMenu.asm"
+# "Source/Netplay/Net-FilePatchCode.asm" is loaded instead of "Source/Project+/FilePatchCode.asm"
+# Set random stagelist based on Code Menu Stagelist setting 057C -> 0587
 ############################################################################
 # 									                                       #
 # NOTE: This file is very close to its limit! Adding codes to BOOST.txt is #
@@ -778,7 +780,7 @@ end:
 .include Source/Project+/Boss.asm
 .include Source/Netplay/Net-CodeMenu.asm	# Different Code Menu from normal!
 .include Source/Project+/CompressPAC.asm
-.include Source/Project+/FilePatchCode.asm
+.include Source/Netplay/Net-FilePatchCode.asm	# Different from normal!
 .include Source/Project+/IndependentSub.asm
 .include Source/Project+/Memory.asm
 .include Source/Project+/TrainingMode.asm
