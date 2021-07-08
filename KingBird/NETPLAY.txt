@@ -292,7 +292,7 @@ Default Settings Modifier [Igglyboo, Brkirch, and FMK]
 ############################################################################
 Set random stagelist based on Code Menu Stagelist setting (Middle 3) [Bird]
 ############################################################################
-* 204E0587 00000000 # If Code Menu stagelist is set to 0
+* 20523400 00000000 # If Code Menu stagelist is set to 0
 * 20523310 00000000 # If 80523310 is 00000000
 * 04523310 DEADBEEF # Set it to DEADBEEF
 * 04523320 00000000 # Set all other values to 00000000
@@ -306,7 +306,7 @@ Set random stagelist based on Code Menu Stagelist setting (Middle 3) [Bird]
 ############################################################################
 Set random stagelist based on Code Menu Stagelist setting (PMBR) [Bird]
 ############################################################################
-* 204E0587 00000001 # If Code Menu stagelist is set to 1
+* 20523400 00000001 # If Code Menu stagelist is set to 1
 * 20523320 00000000 # If 80523320 is 00000000
 * 04523320 DEADBEEF # Set it to DEADBEEF
 * 04523310 00000000 # Set all other values to 00000000
@@ -320,7 +320,7 @@ Set random stagelist based on Code Menu Stagelist setting (PMBR) [Bird]
 ################################################################################
 Set random stagelist based on Code Menu Stagelist setting (Dubs Singles) [Bird]
 ################################################################################
-* 204E0587 00000002 # If Code Menu stagelist is set to 2
+* 20523400 00000002 # If Code Menu stagelist is set to 2
 * 20523330 00000000 # If 80523330 is 00000000
 * 04523330 DEADBEEF # Set it to DEADBEEF
 * 04523310 00000000 # Set all other values to 00000000
@@ -334,7 +334,7 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs Singles) [Bird]
 ############################################################################
 Set random stagelist based on Code Menu Stagelist setting (Dubs) [Bird]
 ############################################################################
-* 204E0587 00000003 # If Code Menu stagelist is set to 3
+* 20523400 00000003 # If Code Menu stagelist is set to 3
 * 20523340 00000000 # If 80523340 is 00000000
 * 04523340 DEADBEEF # Set it to DEADBEEF
 * 04523310 00000000 # Set all other values to 00000000
@@ -780,7 +780,7 @@ end:
 .include Source/Project+/Boss.asm
 .include Source/Netplay/Net-CodeMenu.asm	# Different Code Menu from normal!
 .include Source/Project+/CompressPAC.asm
-.include Source/Netplay/Net-FilePatchCode.asm	# Different from normal!
+.include Source/Project+/FilePatchCode.asm
 .include Source/Project+/IndependentSub.asm
 .include Source/Project+/Memory.asm
 .include Source/Project+/TrainingMode.asm

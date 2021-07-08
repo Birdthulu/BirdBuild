@@ -2,8 +2,6 @@
 # This file is nearly identical to Project+/StageFiles.asm but changes the following:
 # -it points to Netplay/Net-MyMusic.asm instead of Project+/MyMusic.asm
 # -string "/sound/tracklist/" -> "/sound/netplaylist/"
-# Source/Stagelists/PMBRStagelist.asm -> Source/Stagelists/Net-PMBRStagelist.asm
-# Source/Stagelists/DubsStagelist.asm -> Source/Stagelists/Net-DubsStagelist.asm
 #
 #################################
 Stage File System Neo [DukeItOut]
@@ -1219,8 +1217,8 @@ HOOK @ $8009D0C0
     stw r12, 0xB8(r3)       # sets Camera Speed from PAC, used to do so from f2
 }
 
-.include Source/Stagelists/Net-PMBRStagelist.asm
-.include Source/Stagelists/Net-DubsStagelist.asm
+.include Source/Stagelists/PMBRStagelist.asm
+.include Source/Stagelists/DubsStagelist.asm
 
 op lis r4, 0x8049 		@ $800AF58C
 op lwz r4, 0x5D00(r4)	@ $800AF594

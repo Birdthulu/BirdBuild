@@ -1,7 +1,7 @@
 ######################################################################################
 Dubs Stagelist [Bird]
 ######################################################################################
-* 244E057C 00000001 # If 804E0587 is greater than 1
+* 24523400 00000001 # If 80523400 is greater than 1
 op mr r0, r4				@ $806B8F5C # Access stage location in table
 op lbzx r3, r3, r0			@ $806B8F64	# Entry variable is a byte, rather than a half
 op rlwinm r0, r3, 1, 0, 30	@ $800AF618	# Access stage to load
@@ -129,7 +129,7 @@ half[61] |	# Stage Count + 2
 
 SkipStageTables:
 .RESET
-* 244E057C 00000001 # If 804E0587 is greater than 1
+* 24523400 00000001 # If 80523400 is greater than 1
 byte 11 @ $806B929C # Page 1
 byte 24 @ $806B92A4 # Page 2
 byte 24 @ $80496002 # Page 3
