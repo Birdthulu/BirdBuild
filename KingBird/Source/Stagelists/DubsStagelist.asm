@@ -37,7 +37,7 @@ CODE @ $800B91C8
 TABLE_1:
 	byte[11] |
 0x12, | # Subspace Plains
-0x11, | # Port Town Aero Dive
+0x01, | # Final Destination
 0x0F, | # Saffron City
 0x08, | # Pirate Ship
 0x17, | # Bridge of Eldin
@@ -97,7 +97,7 @@ TABLE_3:
 0x21, | # Golden Temple
 0x09, | # Hyrule Castle
 0x18, | # Fountain of Dreams
-0x01, | # Final Destination
+0x11, | # Port Town
 0x1C, | # Green Hill Zone
 0x02, | # Delfino's Secret
 0x16  | # Distant Planet
