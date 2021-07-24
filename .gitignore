@@ -1,6 +1,6 @@
 # Custom for Bird Build
-KingBird/codeset.txt
-KingBird/log.txt
+Build/KingBird/codeset.txt
+Build/KingBird/log.txt
 *.gct
 *.thp
 
