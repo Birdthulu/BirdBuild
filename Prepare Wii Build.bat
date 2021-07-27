@@ -10,3 +10,6 @@ call "MakeSD\nonsecureSendKeys.bat" "progfortr" "{Enter}"
 call "MakeSD\nonsecureSendKeys.bat" "progfortr" "{Enter}"
 ".\Build\KingBird\GCTRealMate.exe" ".\Build\KingBird\BOOST.txt"
 call "MakeSD\nonsecureSendKeys.bat" "progfortr" "{Enter}"
+powershell.exe .\ZipWiiFiles.ps1
+del .\Build\KingBird\RSBE01.GCT /Q
+del .\Build\KingBird\BOOST.GCT /Q

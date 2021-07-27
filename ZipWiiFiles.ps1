@@ -1,0 +1,1 @@
+Compress-Archive -Path ./Build/ "Bird Build Wii.zip"
