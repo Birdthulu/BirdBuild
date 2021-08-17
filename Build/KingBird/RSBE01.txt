@@ -2043,6 +2043,11 @@ HOOK @ $80724224
     fmr f30, f1
 } 
 
+##################################################
+adjustCeil uses correct offset calculation [Eon]
+##################################################
+op lfs f0, 0x18(r1) @ $8089E6E4 #previously used bottom of ecb in calculation, now uses y position from getPosition
+
 .include Source/ProjectM/Damage.asm
 .include Source/ProjectM/DirectionalInfluence.asm
 .include Source/ProjectM/DirectionalInput.asm
