@@ -990,7 +990,7 @@ KK Concert Music Only Triggers Via TLST File [DukeItOut]
 # 04 = 6	# Midnight, No Concert
 # 04 = 7	# Midnight, KK Concert
 ##########################################################
-op b 0x15C @ $8010FCC4
+#op b 0x15C @ $8010FCC4
 
 ###########################################################################
 Metal Cavern and Online Training Room Can Use Custom Tracklists [DukeItOut]
