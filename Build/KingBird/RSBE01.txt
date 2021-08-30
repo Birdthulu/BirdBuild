@@ -3328,6 +3328,13 @@ Alloys Can Shield, Dodge & Grab Ledges [ds22]
 * 048A083C 48000078
 * 048A087C 48000038
 
+#####################################
+P3 on results screen is purple [Bird]
+#####################################
+* 06408A2E 00000004
+* B081FFA0 00000000
+* 00000000 00000000
+
 .include Source/Project+/PokeTrainer.asm
 
 .include Source/Extras/LoadFiles.asm
