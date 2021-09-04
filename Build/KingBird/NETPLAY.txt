@@ -1855,7 +1855,7 @@ HOOK @ $8089156c
   lis r12, 0x80B8
   ori r12, r12, 0x84A8
   lfs f2, 0(r12)
-} 
+}
 
 ###################################################################
 [Project+] Grabbed Opponents face opposite way from grabber [Eon]
@@ -2043,7 +2043,12 @@ HOOK @ $80724224
     ble %end% #if new speed <= 0, don't pass it
     #set as passed frame speed 
     fmr f30, f1
-}
+} 
+
+##################################################
+adjustCeil uses correct offset calculation [Eon]
+##################################################
+op lfs f0, 0x18(r1) @ $8089E6E4 #previously used bottom of ecb in calculation, now uses y position from getPosition
 
 .include Source/ProjectM/Damage.asm
 .include Source/ProjectM/DirectionalInfluence.asm
@@ -3328,9 +3333,8 @@ Alloys Can Shield, Dodge & Grab Ledges [ds22]
 #####################################
 P3 on results screen is purple [Bird]
 #####################################
-* 06408A2E 00000004
-* B081FFA0 00000000
-* 00000000 00000000
+* 02408A2E 0000B081
+* 02408A30 0000FFA0
 
 .include Source/Project+/PokeTrainer.asm
 
