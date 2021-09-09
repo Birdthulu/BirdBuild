@@ -1,1 +1,2 @@
+Write-Host "Enabling Console.asm"
 (Get-Content ".\Build\KingBird\BOOST.txt") -replace '#.include Source/Extras/Console.asm', '.include Source/Extras/Console.asm' | Out-File -encoding ASCII ".\Build\KingBird\BOOST.txt"
