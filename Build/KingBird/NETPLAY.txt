@@ -3463,7 +3463,7 @@ P3 on results screen is purple [Bird]
 
 .include Source/Project+/PokeTrainer.asm
 
-.include Source/Extras/LoadFiles.asm
+!.include Source/Extras/LoadFiles.asm
 
 .include Source/Project+/Debug/modifiedDebug.asm
 
