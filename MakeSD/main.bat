@@ -39,6 +39,7 @@ IF %ERRORLEVEL% GEQ 8 goto error
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\RSBE01.txt"
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\BOOST.txt"
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\NETPLAY.txt"
+"%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\TOURNAMENT.txt"
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\NETBOOST.txt"
 
 ::timeout /t %MIN_EXEC_TIME% /nobreak > NUL
