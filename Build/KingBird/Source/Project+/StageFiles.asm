@@ -794,10 +794,11 @@ finishProcess:
 	li r3, 1				# Force it to assume it is successful
 }
 # Force My Music to load titles from the TLST (modified by Desi to remove song limit on My Music)
+#
+# Fixed issue where altering the My Music menu too extensively would break compatibility with this code
 HOOK @ $8117F418
 {
-	lis r4, 0x8152				#\Get Song ID, but load from 8053F200 instead of 81521880
-	ori r4, r4, 0x1880			#|
+	addi r4, r3, 0x40			#\Get Song ID, but load from 8053F200 instead of 81521880
 	subf r4, r4, r25			#|
 	mulli r4, r4, 0x4			#|
 	lis r5, 0x8053				#|
@@ -1166,6 +1167,27 @@ HOOK @ $806E3D2C
 	mr r5, r3	# Original operation
 }
 byte 0x58 @ $8070294D	# "X"
+
+############################
+Crush anywhere anytime [Eon] 
+############################
+op nop @ $8083b1ac 
+
+#####################################################################################
+Crush effect in ef_StgBattleField outside of SSE [DukeItOut]
+#
+#Requires a special ef_StgBattleField pac file to be included in the stage to show up
+#Requires "Crush anywhere anytime [Eon]" to function
+#####################################################################################
+HOOK @ $8087C838
+{
+	ori r4, r4, 18		# Get SSE effect
+	lis r3, 0x80B8
+	lwz r3, 0x7C28(r3)
+	lbz r0, 0x68(r3)
+	cmplwi r0, 1; beq+ %END% 	# Branch if in SSE
+	lis r4, 0x32; ori r4, r4, 1		# First effect ID in ef_StgBattlefield 
+}
 
 ############################################################################
 Stage Builder Can Not Save to Wii NAND [DukeItOut]
