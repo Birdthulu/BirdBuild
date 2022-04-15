@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+	<name>Bird Build Tournament USB Loader</name>
+	<version>1</version>	
+	<release_date>20180513</release_date>
+	<coder>Birdoodoo</coder>
+	<short_description>Cream of the Crop USB Loader</short_description>
+<long_description>
+Launch Bird Build with USB
+</long_description>
+<ahb_access/>
+<arguments>
+<arg>RSBE01</arg>
+<arg>intro = 0</arg>
+<arg>device = usb</arg>
+<arg>partition = auto</arg>
+<arg>ios = 249</arg>
+<arg>video = ntsc</arg>
+<arg>video_patch = all</arg>
+<arg>ocarina = 1</arg>
+<arg>hooktype = axframe</arg>
+</arguments>
+</app>

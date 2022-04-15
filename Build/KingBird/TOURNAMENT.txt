@@ -780,7 +780,7 @@ end:
 
 .include Source/Project+/Articles.asm
 .include Source/Project+/Boss.asm
-.include Source/Netplay/Tourney-CodeMenu.asm	# Different Code Menu from normal!
+.include Source/Netplay/Tourney-Net-CodeMenu.asm	# Different Code Menu from normal!
 .include Source/Project+/CompressPAC.asm
 .include Source/Project+/FilePatchCode.asm
 .include Source/Project+/IndependentSub.asm

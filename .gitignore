@@ -1,8 +1,10 @@
 # Custom for Bird Build
 Build/KingBird/codeset.txt
 Build/KingBird/log.txt
+TournamentBuild/*
 *.gct
 *.thp
+*.raw
 
 # Created by https://www.gitignore.io/api/linux,macos,windows,notepadpp
 # Edit at https://www.gitignore.io/?templates=linux,macos,windows,notepadpp
