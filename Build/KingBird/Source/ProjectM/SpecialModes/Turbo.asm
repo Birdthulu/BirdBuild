@@ -1,10 +1,10 @@
 ##################################################################################
-Turbo Mode - On Hit Interrupts v2.2 [Magus, Dantarion, standardtoaster, DukeItOut]
+Turbo Mode - On Hit Interrupts v2.3 [Magus, Dantarion, standardtoaster, DukeItOut]
 #
 # 1.2: Modified to work with P+
 # 2.0: Makes it so that attacks can only cancel into attacks, mid-air jumps and 
 # 		other grabs. Previously, it triggered ANY interruptable option
-# 2.1: Grounded jump cancels given back to jab, up tilt, down tilt and specials.
+# 2.1: Grounded jump cancels given back to jab, tilts and specials.
 # 2.2: Jabs, Dash Attacks and Taunts cancel into any grounded movement
 ##################################################################################
 HOOK @ $807803A0
@@ -67,8 +67,7 @@ skipDodge:
 	
 JumpCancelCheck:
 	cmpwi r4, 0x7; bne+ JumpCancel  # \					
-	cmpwi r0, 0x27; beq skipDodge	# | Forward Tilt and Smashes can't jump cancel! 
-	cmpwi r0, 0x2A; blt+ JumpCancel # |
+	cmpwi r0, 0x2A; blt+ JumpCancel # | Smashes can't jump cancel! 
 	cmpwi r0, 0x32; ble- skipDodge	# /
 JumpCancel:
 DashCancelCheck:	
