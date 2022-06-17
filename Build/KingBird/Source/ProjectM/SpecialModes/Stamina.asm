@@ -520,3 +520,17 @@ end:
 * 045884E0 40A00000
 * 045884E4 3FE374BC
 * 045884D0 41200000
+
+######################################################################
+Throws Don't Cut Early for Victim Damage in Stamina [codes, DukeItOut]
+######################################################################
+HOOK @ $8083BCF0  # inside toKnockOut/[Fighter]/(fighter.o)
+{
+on_call_to_cause_death:
+  lwz r12, 0x7C(r5)   # \ 
+  lhz r12, 0x3A(r12)  # / path to current action
+  cmpwi r12, 0x42     # if in thrown, don't call changeStatusRequest/[soStatusModuleImpl]/(so_status_module_impl.o)
+  beq- thrown         # this check should eventually get hit and fail when the throw ends, properly causing the character
+  bctrl               # to finally be knocked out from the stamina loss
+thrown:
+}

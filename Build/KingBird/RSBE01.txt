@@ -1341,10 +1341,11 @@ float 32.0 @ $80B87AC0
 float 32.1 @ $80B87AC4
 
 ############################################
-Base Tripping Rate on Action 43 is 0 [Magus]
+Only Trip Rate 1.0 Can Trip Foes [DukeItOut]
 ############################################
-float 0.0 @ $80B883D4
-float 0.0 @ $80B883D8 
+op nop @ $8076D120
+op lfs f1, 0x18(r13) @ $8076D124
+op bne+ 0x40 @ $8076D130
 
 ##################################################################
 Weight Independent Knockback and Forced Tumble on Throws [Magus]
