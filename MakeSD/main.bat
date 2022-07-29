@@ -36,10 +36,33 @@ ROBOCOPY "%BUILD_DIR:\=\\%KingBird" "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBir
     %PURGE_COMMAND%
 IF %ERRORLEVEL% GEQ 8 goto error
 
+echo ########################################################################################################################
+echo RSBE01.GCT
+echo ########################################################################################################################
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\RSBE01.txt"
+
+echo:
+echo ########################################################################################################################
+echo BOOST.GCT
+echo ########################################################################################################################
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\BOOST.txt"
+
+echo:
+echo ########################################################################################################################
+echo NETPLAY.GCT
+echo ########################################################################################################################
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\NETPLAY.txt"
+
+echo:
+echo ########################################################################################################################
+echo TOURNAMENT.GCT
+echo ########################################################################################################################
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\TOURNAMENT.txt"
+
+echo:
+echo ########################################################################################################################
+echo NETBOOST.GCT
+echo ########################################################################################################################
 "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\GCTRealMate.exe" -q "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird\NETBOOST.txt"
 
 ::timeout /t %MIN_EXEC_TIME% /nobreak > NUL
