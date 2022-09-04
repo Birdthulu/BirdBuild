@@ -1,8 +1,6 @@
-####################################################################
-[Legacy TE] New Load Flag Commands For Etc 1.3 [DukeItOut]
-#
-# 1.3: Added special case for Pit's arrows to reduce filespace usage
-####################################################################
+##########################################################
+[Legacy TE] New Load Flag Commands For Etc 1.2 [DukeItOut]
+##########################################################
 string[4] |
 "/fighter/%s%s%s%s",   |
 "/fighter/%s%s%02d%s", |
@@ -44,13 +42,12 @@ HOOK @ $8084D29C
 	mr r8, r7							# Move ".pac" into register 8
 	andi. r12, r27, 0x7F				# Get the costume ID (filters out bit related to Clear Smash)
 	lis r4, 0x8054
-	cmpwi r31, 0x17;	beq- perCostumePit # Is this Pit? Most of his arrows are going to be the same or for Dark Pit
-	cmplwi r12, 62;  	beq- SetAltZ
-	cmplwi r12, 61;  	beq- SetAltR
+	cmplwi r12, 62;  beq- SetAltZ	# 
+	cmplwi r12, 61;  beq- SetAltR
 	mr r7, r12
 	cmplwi r3, 0x20;  beq+ perCostume
 # This filters sets to the nearest 10 if bit 5 is set in the load flag
-# AltR, AltZ are still given their own, but Dark and Fake are not
+# AltR and AltZ are still given their own, but Dark and Fake are not
 perCostumeSet:
 moduloFunction:
 	cmpwi r7, 10;  blt- modulo_10
@@ -61,11 +58,6 @@ modulo_10:
 	cmpwi r7, 10; bne notFirstSet
 	subi r7, r7, 10			# First twenty costumes use the same Etc file if a set!
 notFirstSet:
-	b perCostume
-perCostumePit:
-	cmpwi r12, 5; beq- SetDark	# Normal Dark Pit
-	cmpwi r12, 21; beq- SetDark	# Classic Dark Pit
-	li r7, 0				# Default arrow	
 perCostume:
 	lis r12, 0x805B			# \
 	lwz r12, 0x50AC(r12)	# | Retrieve the game mode name
@@ -107,8 +99,8 @@ int8_t 0x27 @ $80AD8BA4
 [Project+] Ganondorf Uses Separate Etc Files Per Costume Set [KingJigglypuff, DukeItOut]
 int8_t 0x37 @ $80AD8BAC
 
-[Project+] Pit Uses Separate Etc Files Per Costume [KingJigglypuff, DukeItOut]
-int8_t 0x27 @ $80AD8BAF
+[Project+] Pit Uses Separate Etc Files Per Costume Set [KingJigglypuff, DukeItOut]
+int8_t 0x37 @ $80AD8BAF
 
 [Project+] Ivysaur has a FitFinal.pac [KingJigglypuff]
 int8_t 0x17 @ $80AD8BB7

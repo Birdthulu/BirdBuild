@@ -638,40 +638,7 @@ HOOK @ $806def74
 	bne %end%
 	stw r0, 0x34(r27)
 	stw r0, 0x30(r27)
-}
-
-#####################################################################################################
-[Project+] Disable Smash Balls during Classic's Team <Character> Battles [DukeItOut]
-#
-# This is needed due to a crash relating to swapping characters in and out 
-# This code can likely be removed in the future if a way to expand the memory allocation of the 
-# decompression buffer without adversely affecting other parts of the game is made possible.
-#
-# Note that this does not cover All-Star Vs. so that people can use the first costume for characters
-# with Smash Balls in that mode, but the crash will occur if using other skins for the same reasoning
-# that it does in Classic's team horde battles!
-#####################################################################################################
-HOOK @ $809AE4E0
-{
-	subi r0, r3, 1	# Original operation, ticks down the timer for when smash balls can be available
-	# however, if set to -1, Smash Balls won't appear for the rest of the match (value normally used when a Smash Ball is present)
-	lis r12, 0x805B			# \
-	lwz r12, 0x50AC(r12)	# | Retrieve the game mode name
-	lwz r12, 0x10(r12)		# |
-	lwz r12, 0x0(r12)		# /
-	lis r6, 0x8070; ori r6, r6, 0x24D0	# \ Only trigger for Classic mode!
-	cmpw r6, r12; bne+ %END%			# /
-isClassic:
-	lis r12, 0x90FF
-	lwz r12, 0x50F4(r12)
-	cmpwi r12, 0; beq+ %END%		# Don't read this if it is empty!
-	lwz r4, 0x1C8(r12)				# Amount in the team
-	cmpwi r4, 10; bne+ %END%		# Verify that there are ten members, this amount doesn't change in teams regardless of difficulty
-	lwz r4, 0x1C4(r12)				# Amount in the team KO'd
-	cmpwi r4, 10; beq+ %END%		# If 10 members have been KO'd, this round is over and the info is retained into non-team rounds as a leftover
-forceDisable:	
-	li r0, -1
-}		
+}	
 
 #####################################################
 Subspace uses same Internal Constants as Versus [Eon]
@@ -3479,19 +3446,31 @@ HOOK @ $807A55F0
 Player Number Result Screen Colors [Bird]
 #########################################
 #Player 1
-byte[3] 0xFF, 0xA9, 0xA7 |
+byte[3] |
+0xFF,   |
+0xA9,   |
+0xA7    |
 @ $80408A28
 
 #Player 2
-byte[3] 0xA2, 0xB4, 0xFF |
+byte[3] |
+0xA2,   |
+0xB4,   |
+0xFF    |
 @ $80408A2B
 
 #Player 3
-byte[3] 0xB0, 0x81, 0xFF |
+byte[3] |
+0xB0,   |
+0x81,   |
+0xFF    |
 @ $80408A2E
 
 #Player 4
-byte[3] 0xA0, 0xE5, 0x8B |
+byte[3] |
+0xA0,   |
+0xE5,   |
+0x8B    |
 @ $80408A31
 
 .include Source/Project+/Attributes.asm
