@@ -16,7 +16,6 @@ powershell.exe .\RenameFilesForWiiBuild.ps1
 @echo Building Codesets
 ".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\RSBE01.txt"
 ".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\BOOST.txt"
-".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\TOURNAMENT.txt"
 
 ::@echo Zipping Files Please Wait
 ::powershell.exe .\ZipWiiFiles.ps1
