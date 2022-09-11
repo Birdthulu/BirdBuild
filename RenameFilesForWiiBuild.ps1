@@ -1,2 +1,0 @@
-Write-Host "Enabling Console.asm"
-(Get-Content ".\WiiBuild\KingBird\BOOST.txt") -replace '#.include Source/Extras/Console.asm', '.include Source/Extras/Console.asm' | Out-File -encoding ASCII ".\WiiBuild\KingBird\BOOST.txt"

@@ -11,11 +11,12 @@ rmdir .\WiiBuild\KingBird\pf\movie /s /q
 rmdir .\WiiBuild\KingBird\pf\sound\netplaylist /s /q
 rmdir .\WiiBuild\KingBird\Source\Netplay /s /q
 
-powershell.exe .\RenameFilesForWiiBuild.ps1
+powershell.exe .\EditFilesForWiiBuild.ps1
 
 @echo Building Codesets
 ".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\RSBE01.txt"
 ".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\BOOST.txt"
+".\WiiBuild\KingBird\GCTRealMate.exe" -q ".\WiiBuild\KingBird\TOURNAMENT.txt"
 
 ::@echo Zipping Files Please Wait
 ::powershell.exe .\ZipWiiFiles.ps1
