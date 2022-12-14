@@ -291,6 +291,12 @@ string "db_selmap_en.pac"               @ $817F637C
 string "stageslotdubs/"                 @ $80550C98 # This address might change and crash
 string "stageinfodubs/"                 @ $80550CA8 # This address might change and crash
 * E0000000 80008000
+* 20523400 00000004 # If 80523400 is 4 (NE)
+string "/menu2/ne_selmap.pac"         @ $806FF3F0
+string "ne_selmap_en.pac"             @ $817F637C
+string "stageslotne/"                 @ $80550C98 # This address might change and crash
+string "stageinfone/"                 @ $80550CA8 # This address might change and crash
+* E0000000 80008000
 
 ##############################################################################################################################
 [Bird, Project+] RSBE v1.30 (/KingBird/pf/sfx, can load soundbank clones for stages) (requires CSSLE) [InternetExplorer, DukeItOut]

@@ -286,6 +286,9 @@ Default Settings Modifier [Igglyboo, Brkirch, and FMK]
 * 0417F364 04000A00
 * 0417F368 08010100
 * 0417F36C 00000000
+* 42000000 90000000 #Set base address to 90000000
+* 0417BE74 15200017 # Brawl stages
+* 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
 ############################################################################
@@ -297,6 +300,7 @@ Set random stagelist based on Code Menu Stagelist setting (Middle 3) [Bird]
 * 04523320 00000000 # Set all other values to 00000000
 * 04523330 00000000
 * 04523340 00000000
+* 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
 * 0417BE74 04000001 # Brawl stages
 * 0417BE70 00020000 # Melee stages
@@ -311,6 +315,7 @@ Set random stagelist based on Code Menu Stagelist setting (PMBR) [Bird]
 * 04523310 00000000 # Set all other values to 00000000
 * 04523330 00000000
 * 04523340 00000000
+* 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
 * 0417BE74 15200017 # Brawl stages
 * 0417BE70 00021000 # Melee stages
@@ -325,6 +330,7 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs Singles) [Bird]
 * 04523310 00000000 # Set all other values to 00000000
 * 04523320 00000000
 * 04523340 00000000
+* 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
 * 0417BE74 04A08521 # Brawl stages
 * 0417BE70 00020000 # Melee stages
@@ -339,8 +345,24 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs) [Bird]
 * 04523310 00000000 # Set all other values to 00000000
 * 04523320 00000000
 * 04523330 00000000
+* 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
 * 0417BE74 04048523 # Brawl stages
+* 0417BE70 00020000 # Melee stages
+* E0000000 80008000
+
+############################################################################
+Set random stagelist based on Code Menu Stagelist setting (NE) [Bird]
+############################################################################
+* 20523400 00000004 # If Code Menu stagelist is set to 4
+* 20523350 00000000 # If 80523350 is 00000000
+* 04523350 DEADBEEF # Set it to DEADBEEF
+* 04523310 00000000 # Set all other values to 00000000
+* 04523320 00000000
+* 04523330 00000000
+* 04523340 00000000
+* 42000000 90000000 #Set base address to 90000000
+* 0417BE74 04801401 # Brawl stages
 * 0417BE70 00020000 # Melee stages
 * E0000000 80008000
 

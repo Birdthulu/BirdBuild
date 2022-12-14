@@ -1236,6 +1236,7 @@ HOOK @ $8009D0C0
 
 .include Source/Stagelists/PMBRStagelist.asm
 .include Source/Stagelists/DubsStagelist.asm
+.include Source/Stagelists/NEStagelist.asm
 
 op lis r4, 0x8049 		@ $800AF58C
 op lwz r4, 0x5D00(r4)	@ $800AF594
