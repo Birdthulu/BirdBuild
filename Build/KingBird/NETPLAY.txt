@@ -3470,33 +3470,20 @@ HOOK @ $807A55F0
 ##########################################
 Player Number Result Screen Colors [Bird]
 ##########################################
-#Player 1
-byte[3] |
-0xFF,   |
-0xA9,   |
-0xA7    |
+byte[12] |
+0xFF, | #Player 1
+0xA9, |
+0xA7, |
+0xA2, | #Player 2
+0xB4, |
+0xFF, |
+0xB0, | #Player 3
+0x81, |
+0xFF, |
+0xA0, | #Player 4
+0xE5, |
+0x8B  |
 @ $80408A28
-
-#Player 2
-byte[3] |
-0xA2,   |
-0xB4,   |
-0xFF    |
-@ $80408A2B
-
-#Player 3
-byte[3] |
-0xB0,   |
-0x81,   |
-0xFF    |
-@ $80408A2E
-
-#Player 4
-byte[3] |
-0xA0,   |
-0xE5,   |
-0x8B    |
-@ $80408A31
 
 .include Source/Project+/Attributes.asm
 .include Source/Project+/PokeTrainer.asm
