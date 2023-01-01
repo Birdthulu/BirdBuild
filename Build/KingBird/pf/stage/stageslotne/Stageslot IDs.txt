@@ -3,7 +3,7 @@
 03 - Delfino Secret
 04 - Luigi's Mansion
 05 - Metal Cavern
-06 - Bowser's Castle
+06 - Molgera's Lair
 07 - Kongo Jungle
 08 - Rumble Falls
 09 - Pirate Ship
@@ -12,15 +12,15 @@
 0D - Yoshi's Island
 0E - Halberd
 13 - Lylat Cruise
-14 - Saffron City
+14 - Duskull Peak
 15 - Spear Pillar
 16 - Port Town
-17 - Infinite Glacier
+17 - Subspace Plains
 18 - Flat Zone
 19 - Castle Siege
 1C - Wario Land
 1D - Distant Planet
-1E - Skyworld
+1E - Bridge of Eldin
 1F - Fountain of Dreams
 20 - Fourside
 21 - Smashville
@@ -39,7 +39,7 @@
 2F - Peach Castle
 30 - Corneria
 31 - Big Blue
-32 - Brinstar
+32 - Planet Zebes
 33 - Hyrule Castle
 34 - Home Run (Home Run Contest Stage)
 35 - Edit Stage (Stage Builder Stages)
@@ -53,7 +53,7 @@
 43 - Sky Sanctuary
 44 - Dead Line
 45 - Dinosaur Land
-46 - Oil Drum Alley
+46 - Minecart Madness
 47 - Golden Temple
 48 - Bell Tower
 49 - Metroid Lab

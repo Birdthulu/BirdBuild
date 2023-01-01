@@ -276,8 +276,8 @@ string "/menu2/sc_selcharacter2.pac"    @ $806FF308
 string "sc_selcharacter2_en.pac"        @ $817F634D
 string "/menu2/sc_selmap.pac"           @ $806FF3F0
 string "sc_selmap_en.pac"               @ $817F637C
-string "stageslot/"                     @ $80550C98 # This address might change and crash
-string "stageinfo/"                     @ $80550CA8 # This address might change and crash
+string "stageslot/"                     @ $80550C58 # This address might change and crash
+string "stageinfo/"                     @ $80550C68 # This address might change and crash
 * E0000000 80008000
 * 24523400 00000001 # If 80523400 is greater than 1
 string "/menu2/db_menumain.pac"         @ $806FB248
@@ -288,14 +288,14 @@ string "/menu2/db_selcharacter2.pac"    @ $806FF308
 string "db_selcharacter2_en.pac"        @ $817F634D
 string "/menu2/db_selmap.pac"           @ $806FF3F0
 string "db_selmap_en.pac"               @ $817F637C
-string "stageslotdubs/"                 @ $80550C98 # This address might change and crash
-string "stageinfodubs/"                 @ $80550CA8 # This address might change and crash
+string "stageslotdubs/"                 @ $80550C58 # This address might change and crash
+string "stageinfodubs/"                 @ $80550C68 # This address might change and crash
 * E0000000 80008000
 * 20523400 00000004 # If 80523400 is 4 (NE)
 string "/menu2/ne_selmap.pac"         @ $806FF3F0
 string "ne_selmap_en.pac"             @ $817F637C
-string "stageslotne/"                 @ $80550C98 # This address might change and crash
-string "stageinfone/"                 @ $80550CA8 # This address might change and crash
+string "stageslotne/"                 @ $80550C58 # This address might change and crash
+string "stageinfone/"                 @ $80550C68 # This address might change and crash
 * E0000000 80008000
 
 ##############################################################################################################################
