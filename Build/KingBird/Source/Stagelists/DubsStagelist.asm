@@ -17,21 +17,20 @@ Dubs Stagelist [Bird]
 .GOTO->SkipStageTables
 
 TABLE_1:
-	byte[11] |
+	byte[10] |
+0x01, | # Final Destination (Dubs Only)
+0x0C, | # Yoshi's Island (Dubs Only)
 0x12, | # Subspace Plains
-0x01, | # Final Destination
-0x0F, | # Saffron City
+0x17, | # Bridge of Eldin (Singles Only)
+0x15, | # Wario Land (Singles Only)
 0x08, | # Pirate Ship
-0x17, | # Bridge of Eldin
-0x15, | # Wario Land
-0x0A, | # Metroid Lab
 0x1A, | # Smashville
 0x00, | # Battlefield
 0x28, | # Pokemon Stadium 2
-0x05  | # Molgera's Lair
+0x05  | # Luigi's Mansion 2
 
 TABLE_2:
-	byte[24] |
+	byte[25] |
 0x24, | # Peach's Castle
 0x1B, | # Shadow Moses Island
 0x06, | # Kongo Jungle
@@ -45,7 +44,6 @@ TABLE_2:
 0x25, | # Corneria
 0x27, | # Planet Zebes
 0x1F, | # Temple
-0x0C, | # Yoshi's Island
 0x2B, | # Training Room
 0x10, | # Spear Pillar
 0x34, | # Bell Tower
@@ -55,7 +53,9 @@ TABLE_2:
 0x1D, | # PictoChat
 0x04, | # Metal Cavern
 0x23, | # Dream Land
-0x20  | # Yoshi's Story
+0x20, | # Yoshi's Story
+0x0F, | # Duskull
+0x0A  | # Metroid Lab
 
 TABLE_3:
 	byte[24] |
@@ -112,8 +112,8 @@ half[61] |	# Stage Count + 2
 SkipStageTables:
 .RESET
 * 24523400 00000001 # If 80523400 is greater than 1
-byte 11 @ $806B929C # Page 1
-byte 24 @ $806B92A4 # Page 2
+byte 10 @ $806B929C # Page 1
+byte 25 @ $806B92A4 # Page 2
 byte 24 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
