@@ -19,8 +19,8 @@ Dubs Stagelist [Bird]
 TABLE_1:
 	byte[10] |
 0x01, | # Final Destination (Dubs Only)
-0x0C, | # Yoshi's Island (Dubs Only)
-0x12, | # Subspace Plains
+0x12, | # Subspace Plains (Dubs Only)
+0x0C, | # Yoshi's Island
 0x17, | # Bridge of Eldin (Singles Only)
 0x15, | # Wario Land (Singles Only)
 0x08, | # Pirate Ship
