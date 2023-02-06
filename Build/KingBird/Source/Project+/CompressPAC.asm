@@ -1,34 +1,30 @@
 ##################################################
-Costume PAC files can be compressed V2 [DukeItOut]
+Costume PAC files can be compressed V3 [DukeItOut]
+#
+# V3: Made the check for if an archive is 
+# compressed more robust, as it could trigger 
+# false negatives before.
+#
+# (This fixes an issue where active costumes 
+# could not clone before in V2 of the code)
 ##################################################
-HOOK @ $8084CB10
-{
-	li r26, 1			# Force it to think there is compression
-	li r15, -0xC0DE 	# Act as an identifier
-}
-HOOK @ $800453F0
-{
-	mr r5, r22			# Original operation
-	cmpwi r15, -0xC0DE 	# Identifier check for costumes
-	bne+ %END%
-	li r15, -1
-	lis r3, 0x8004		# \
-	ori r3, r3, 0x5448	# | Force costume file to not clone.
-	mtctr r3			# | This avoids a bug where uncompressed costumes can freeze when cloning. 
-	bctr				# / 
-}
+op li r26, 1 @ $8084CB10	# Force it to think there is compression
 op b 0x20 	@ $8084D068
 half 0x6163	@ $80B0A652
 HOOK @ $80015CAC
 {
-  mr r22, r3
-  cmplwi r22, 0x4352
+  mr r22, r3			# Original operation. SHOULD be the filesize of the decompressed file.
+  lis r12, 0x4152		# \ "ARC"
+  ori r12, r12, 0x4300	# /
+  lwz r3, 0x0(r24)		# Pointer to first four bytes of archive file we're trying to decompress.
+  cmplw r3, r12			# Compressed archives don't start instantly with uncompressed file formatting.
   bne+ %END%
 Decompress:
-  lis r12, 0x8001
-  ori r12, r12, 0x5D0C
-  mtctr r12
-  bctr 
+  mr r22, r21			# File size (regardless of if compressed or not)		
+  lis r12, 0x8001		# 
+  ori r12, r12, 0x5D24	# Act like it is uncompressed because it is!
+  mtctr r12				#
+  bctr 					#
 }
 
 #############################################################################
