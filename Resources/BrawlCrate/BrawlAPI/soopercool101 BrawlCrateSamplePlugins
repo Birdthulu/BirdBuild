@@ -1,0 +1,12 @@
+v6.1
+master
+1/9/2021 10:51:20 AM
+Loaders/Parsers/Example Parser (RFNT).py
+Loaders/Utility/Clear Keyframes.py
+Loaders/Utility/Mirror Collisions.py
+Loaders/Utility/Result Portraits Exporter.py
+Loaders/Utility/Shift UVs.py
+Plugins/Examples/Collision Flag Finder.py
+Plugins/Examples/Compress Fighter PACs.py
+Plugins/Examples/Dump Textures.py
+Plugins/Examples/Single Linked Collision Finder.py

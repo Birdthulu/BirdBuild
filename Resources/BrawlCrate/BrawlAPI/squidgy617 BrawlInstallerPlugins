@@ -1,0 +1,24 @@
+v1.11.3
+master
+2/5/2023 9:26:09 PM
+Lib/BrawlInstallerForms.py
+Lib/BrawlInstallerLib.py
+Lib/ExtractLib.py
+Lib/InstallLib.py
+Lib/UninstallLib.py
+Plugins/BrawlInstaller Plugins/Extract/Extract All Characters.py
+Plugins/BrawlInstaller Plugins/Extract/Extract Character.py
+Plugins/BrawlInstaller Plugins/Install/Install Character.py
+Plugins/BrawlInstaller Plugins/Install/Install Costume.py
+Plugins/BrawlInstaller Plugins/Install/Install Franchise Icon.py
+Plugins/BrawlInstaller Plugins/Manage/Manage Music.py
+Plugins/BrawlInstaller Plugins/Manage/Manage Stages.py
+Plugins/BrawlInstaller Plugins/Output Fighter Info to Text.py
+Plugins/BrawlInstaller Plugins/Package Character.py
+Plugins/BrawlInstaller Plugins/Restore Backup.py
+Plugins/BrawlInstaller Plugins/Settings.py
+Plugins/BrawlInstaller Plugins/Uninstall/Uninstall Character.py
+Plugins/BrawlInstaller Plugins/Uninstall/Uninstall Costume.py
+Plugins/BrawlInstaller Plugins/Uninstall/Uninstall Franchise Icon.py
+Resources/BrawlInstaller/InfResultMark##_TopN.mdl0
+Resources/BrawlInstaller/InfResultMark01_TopN.clr0

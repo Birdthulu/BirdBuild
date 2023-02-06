@@ -21,7 +21,7 @@ SCRIPT_NAME = "Stock Icon Exporter"
 STOCKFACETEX_BRRES_PATH = ""
 
 # Text shown before running the plug-in
-INIT_PROMPT_TEXT = "Export stock icon data from this file to STGRESULT.pac, STGRESULTnynj.pac, StockFaceTex.brres, sc_selcharacter.pac, and db_selcharacter.pac.\n\nPress OK to continue."
+INIT_PROMPT_TEXT = "Export stock icon data from this file to STGRESULT.pac, STGRESULTnynj.pac, StockFaceTex.brres, sc_selmap.pac, ne_selmap.pac, db_selmap.pac, sc_selcharacter.pac, and db_selcharacter.pac.\n\nPress OK to continue."
 
 ## Start enable check functions
 
@@ -106,9 +106,81 @@ def importStockfaceIntoSTGRESULTpac():
 		if STOCKFACE_PAT0_NAME in child.Name:
 			# Replace existing pat0 animation in STGRESULT with the temp pat0 (from info.pac)
 			child.Replace(TEMP_STOCKS_PAT0_PATH)
+			pat0file = child
 			return
 
-# Find MiscData 120 inside STGRESULT.pac, or MiscData90 inside selcharacter.pac, and replace with stocks BRRES
+# With selmap.pac open, replace the existing Stockface pat0 inside MiscData 20
+def importStockfaceIntoSELMAPpac():
+
+	# Iterate through children to find MiscData 20
+	for child in BrawlAPI.NodeListOfType[BRRESNode]():
+		if isinstance(child, BRRESNode) and child.HasChildren and "[20]" in child.Name:
+			MiscData20 = child
+			break
+
+	# Iterate through MiscData 110 to find pat0 folder
+	for child in MiscData20.Children:
+		if "AnmTexPat(NW4R)" in child.Name:
+			pat0Folder = child
+			break
+
+	# Iterate through pat0 folder to find existing stockface pat0
+	for child in pat0Folder.Children:
+		if "MenSelmapPlayer1_TopN" in child.Name:
+			# Replace existing pat0 animation in SELMAP with the temp pat0 (from info.pac)
+			child.Replace(TEMP_STOCKS_PAT0_PATH)
+			pat0File1 = child
+			break
+
+	# Rename lambert87 to playericon1M
+	for child in pat0File1.Children:
+		if "lambert87" in child.Name:
+			child.Name = "playericon1M"
+			break
+
+	# Iterate through pat0 folder to find existing stockface pat0
+	for child in pat0Folder.Children:
+		if "MenSelmapPlayer2_TopN" in child.Name:
+			# Replace existing pat0 animation in SELMAP with the temp pat0 (from info.pac)
+			child.Replace(TEMP_STOCKS_PAT0_PATH)
+			pat0File2 = child
+			break
+
+	# Rename lambert87 to playericon2M
+	for child in pat0File2.Children:
+		if "lambert87" in child.Name:
+			child.Name = "playericon2M"
+			break
+
+	# Iterate through pat0 folder to find existing stockface pat0
+	for child in pat0Folder.Children:
+		if "MenSelmapPlayer3_TopN" in child.Name:
+			# Replace existing pat0 animation in SELMAP with the temp pat0 (from info.pac)
+			child.Replace(TEMP_STOCKS_PAT0_PATH)
+			pat0File3 = child
+			break
+
+	# Rename lambert87 to playericon3M
+	for child in pat0File3.Children:
+		if "lambert87" in child.Name:
+			child.Name = "playericon3M"
+			break
+
+	# Iterate through pat0 folder to find existing stockface pat0
+	for child in pat0Folder.Children:
+		if "MenSelmapPlayer4_TopN" in child.Name:
+			# Replace existing pat0 animation in SELMAP with the temp pat0 (from info.pac)
+			child.Replace(TEMP_STOCKS_PAT0_PATH)
+			pat0File4 = child
+			break
+
+	# Rename lambert87 to playericon4M
+	for child in pat0File4.Children:
+		if "lambert87" in child.Name:
+			child.Name = "playericon4M"
+			return
+
+# Find MiscData 120 inside STGRESULT.pac, or MiscData90 inside selcharacter.pac, or MiscData40 inside selmap.pac and replace with stocks BRRES
 def importBrresIntoPac(pacFilePath, brresFilePath):
 	BrawlAPI.OpenFile(pacFilePath)
 	
@@ -123,6 +195,13 @@ def importBrresIntoPac(pacFilePath, brresFilePath):
 	elif "selcharacter" in BrawlAPI.RootNode.Name and isinstance(BrawlAPI.RootNode, ARCNode):
 		for child in BrawlAPI.NodeListOfType[BRRESNode]():
 			if "[90]" in child.Name and isinstance (child, BRRESNode) and child.HasChildren:
+				child.Replace(brresFilePath)
+				return		
+
+	# sc_selcharacter.pac > MiscData90 brres
+	elif "selmap" in BrawlAPI.RootNode.Name and isinstance(BrawlAPI.RootNode, ARCNode):
+		for child in BrawlAPI.NodeListOfType[BRRESNode]():
+			if "[40]" in child.Name and isinstance (child, BRRESNode) and child.HasChildren:
 				child.Replace(brresFilePath)
 				return		
 
@@ -163,6 +242,9 @@ def main(node):
 	RESULTS_PAC_PATH_NYNJ = PF_FOLDER + "\stage\melee\STGRESULTnynj.pac"
 	SELCHARACTER_PAC_PATH = PF_FOLDER + "\menu2\sc_selcharacter.pac"
 	SELCHARACTER_PAC_PATH_DUBS = PF_FOLDER + "\menu2\db_selcharacter.pac"
+	SELMAP_PAC_PATH = PF_FOLDER + "\menu2\sc_selmap.pac"
+	SELMAP_PAC_PATH_NE = PF_FOLDER + "\menu2\\ne_selmap.pac"
+	SELMAP_PAC_PATH_DUBS = PF_FOLDER + "\menu2\db_selmap.pac"
 	
 	node.ExportUncompressed(STOCKFACETEX_BRRES_PATH)
 	
@@ -174,24 +256,46 @@ def main(node):
 	purgeAllExceptStocks()
 	BrawlAPI.SaveFile()
 	
-	# Open STGRESULT, and import pat0 and new brres (file 2 of 5)
-	importBrresIntoPac(RESULTS_PAC_PATH, STOCKFACETEX_BRRES_PATH)
-	importStockfaceIntoSTGRESULTpac()
-	BrawlAPI.SaveFile()
-	
-	# Open STGRESULTnynj, and import pat0 and new brres (file 3 of 5)
-	importBrresIntoPac(RESULTS_PAC_PATH_NYNJ, STOCKFACETEX_BRRES_PATH)
-	importStockfaceIntoSTGRESULTpac()
-	BrawlAPI.SaveFile()
-    
-	# Open selcharacter and import brres (file 4 of 5)
-	importBrresIntoPac(SELCHARACTER_PAC_PATH, STOCKFACETEX_BRRES_PATH)
-	BrawlAPI.SaveFile()
-    
-	# Open selcharacter and import brres (file 5 of 5)
-	importBrresIntoPac(SELCHARACTER_PAC_PATH_DUBS, STOCKFACETEX_BRRES_PATH)
-	BrawlAPI.SaveFile()
-	
+	# Open STGRESULT, and import pat0 and new brres (file 2 of 8)
+	if File.Exists(RESULTS_PAC_PATH):
+		importBrresIntoPac(RESULTS_PAC_PATH, STOCKFACETEX_BRRES_PATH)
+		importStockfaceIntoSTGRESULTpac()
+		BrawlAPI.SaveFile()
+
+	# Open STGRESULTnynj, and import pat0 and new brres (file 3 of 8)
+	if File.Exists(RESULTS_PAC_PATH_NYNJ):
+		importBrresIntoPac(RESULTS_PAC_PATH_NYNJ, STOCKFACETEX_BRRES_PATH)
+		importStockfaceIntoSTGRESULTpac()
+		BrawlAPI.SaveFile()
+
+	# Open selcharacter and import brres (file 4 of 8)
+	if File.Exists(SELCHARACTER_PAC_PATH):
+		importBrresIntoPac(SELCHARACTER_PAC_PATH, STOCKFACETEX_BRRES_PATH)
+		BrawlAPI.SaveFile()
+
+	# Open selcharacter and import brres (file 5 of 8)
+	if File.Exists(SELCHARACTER_PAC_PATH_DUBS):
+		importBrresIntoPac(SELCHARACTER_PAC_PATH_DUBS, STOCKFACETEX_BRRES_PATH)
+		BrawlAPI.SaveFile()
+
+	# Open selmap and import brres (file 6 of 8)
+	if File.Exists(SELMAP_PAC_PATH):
+		importBrresIntoPac(SELMAP_PAC_PATH, STOCKFACETEX_BRRES_PATH)
+		importStockfaceIntoSELMAPpac()
+		BrawlAPI.SaveFile()
+
+	# Open selmap and import brres (file 7 of 8)
+	if File.Exists(SELMAP_PAC_PATH_NE):
+		importBrresIntoPac(SELMAP_PAC_PATH_NE, STOCKFACETEX_BRRES_PATH)
+		importStockfaceIntoSELMAPpac()
+		BrawlAPI.SaveFile()
+
+	# Open selmap and import brres (file 8 of 8)
+	if File.Exists(SELMAP_PAC_PATH_DUBS):
+		importBrresIntoPac(SELMAP_PAC_PATH_DUBS, STOCKFACETEX_BRRES_PATH)
+		importStockfaceIntoSELMAPpac()
+		BrawlAPI.SaveFile()
+
 	# Re-open info.pac after all other files are handled
 	BrawlAPI.OpenFile(INFO_PAC_PATH)
 	
@@ -200,7 +304,7 @@ def main(node):
 	
 	# Script complete!
 	msg = "Stock tex0, plt0, and pat0 successfully exported from info.pac to: \n\n" + \
-	STOCKFACETEX_BRRES_PATH + "\n\n" + RESULTS_PAC_PATH + "\n\n" + RESULTS_PAC_PATH_NYNJ + "\n\n" + SELCHARACTER_PAC_PATH + "\n\n" + SELCHARACTER_PAC_PATH_DUBS
+	STOCKFACETEX_BRRES_PATH + "\n\n" + RESULTS_PAC_PATH + "\n\n" + RESULTS_PAC_PATH_NYNJ + "\n\n" + SELCHARACTER_PAC_PATH + "\n\n" + SELCHARACTER_PAC_PATH_DUBS + "\n\n" + SELMAP_PAC_PATH + "\n\n" + SELMAP_PAC_PATH_NE + "\n\n" + SELMAP_PAC_PATH_DUBS
 	BrawlAPI.ShowMessage(msg, "Success!")
 
 ## End main function

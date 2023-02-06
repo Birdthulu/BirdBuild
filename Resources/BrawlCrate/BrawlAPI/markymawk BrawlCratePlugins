@@ -1,0 +1,40 @@
+v1.17.3
+main
+1/1/2023 7:57:02 AM
+Lib/mawwwkLib.py
+Loaders/ASL + Param File Navigator.py
+Loaders/Adjust Hue, Sat, Val.py
+Loaders/Animations/CLR0 Set All Game & Watch Colors.py
+Loaders/Animations/Clear Unused Bones (CHR, VIS).py
+Loaders/Animations/Clear Unused Materials (SRT, CLR, PAT).py
+Loaders/Animations/PAT0 Set Palettes to Texture Name.py
+Loaders/BRRES Match All StgPosition Nodes.py
+Loaders/CLR0 Copy MenuRule colors.py
+Loaders/MDL0 Copy Fighter Model.py
+Loaders/MDL0 Import Material Settings.py
+Loaders/MDL0 Set All Material Fog & LightSet.py
+Loaders/SCN0 Locate Usage.py
+Loaders/TEX0 Colorsmash-Safe Texture Sort.py
+Loaders/TEX0 Increment Name.py
+Loaders/TEX0 Locate Usage.py
+Loaders/TEX0 Rename and Preserve References.py
+Loaders/TLST Add BRSTMs to Tracklist.py
+Loaders/TLST Check Missing Tracks.py
+Loaders/TLST Rename & Set Volume in All Tracklists.py
+Loaders/TLST Reset Track Frequencies.py
+Loaders/Utility/Export MenuRule.py
+Loaders/Utility/Result Portraits Exporter (Auto).py
+Loaders/Utility/info.pac Stock Icon Exporter.py
+Plugins/Convert PNGs to Battle Portraits.py
+Plugins/Copy Tracklist Frequencies (P+).py
+Plugins/File Checking (P+)/Detect Unused BRSTMs.py
+Plugins/File Checking (P+)/Verify ASL (stageslot) File Data.py
+Plugins/File Checking (P+)/Verify Param (stageinfo) File Data.py
+Plugins/File Checking (P+)/Verify TLST (tracklist) File Data.py
+Plugins/MD5 of Selected Node.py
+Plugins/Output Nodes to Text.py
+Plugins/PAC File Optimization/Delete Unused Animation Data.py
+Plugins/PAC File Optimization/Delete Unused Bones.py
+Plugins/PAC File Optimization/Delete Unused Stage Textures.py
+Plugins/PAC File Optimization/Delete Unused Vertices and Normals.py
+Plugins/PAC File Optimization/Generate Static BRRES Redirects.py
