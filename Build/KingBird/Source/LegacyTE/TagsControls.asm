@@ -91,8 +91,7 @@ HOOK @ $8069FEC8
 {
   lbz r14, 0x60(r3)
   cmpwi r14, 0x1;  bgt- loc_0x60
-  andi. r14, r6, 0x400
-  beq- loc_0x60
+  andi. r14, r6, 0x400;  beq- loc_0x60	# Was X pressed?
   lwz r14, 0x44(r3)
   cmpwi r14, 0xFFFF;  beq- loc_0x60
   cmpwi r14, 0x0;  beq- loc_0x60

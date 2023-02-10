@@ -1,44 +1,128 @@
-CSS Custom Controls
-* 42000000 92000000
-* 075CE310 00000060
-* 4C000000 00000000	# L
-* 52000000 00000000 # R
-* 5A000000 00000000 # Z
-* 44205550 00000000 # D UP
-* 44205349 44450000 # D SIDE
-* 4420444F 574E0000 # D DOWN
-* 41000000 00000000 # A
-* 42000000 00000000 # B
-* 43535449 434B0000 # CSTICK
-* 59000000 00000000 # Y
-* 58000000 00000000 # X
-* 54415000 00000000 # TAP
+##################################################
+CSS Custom Controls V1.51 [Fracture, DukeItOut]
+##################################################
+# Rewritten for stability and feature
+# reasons to prevent it from occupying
+# inappropriate memory
+#
+# Made portable. Note: It is now dependent 
+# on sc_selcharacter.pac containing Msg
+# data in Misc Data 140, 150, 160, 170 and 180!
+##################################################
+.alias TagSize = 0x124		# Size of each individual tag in memory
+							# Configured this way should custom tag sizes happen in the future.
+.alias SFX_Enter2		=	0x26	# (Menu 17)
+.alias SFX_Enter3		=	0x25	# (Menu 16)
+.alias SFX_Exit2   		= 	0x28	# (Menu 19)
+.alias SFX_Exit3		=	0x08	# (Menu  8)
+.alias SFX_MaxPage		=	0x03	# (Menu  4)
+.alias SFX_SelectOption =	0x01	# (Menu  2)
+.alias SFX_ToggleRumble	= 	0x24	# (Menu 15)
 
-* 42000000 80000000
+HOOK @ $8069FE78	# Done so there's room for a pointer below.
+{
+	lwz r0, 0x24(r1)
+	mtlr r0
+	addi r1, r1, 0x20
+	blr 
+}
 
-* 42000000 92000000 
-* 075CE370 00000060
-* 41545441 434B0000 # ATTACK
-* 53504543 49414C00 # SPECIAL
-* 4A554D50 00000000 # JUMP
-* 53484945 4C440000 # SHIELD
-* 47524142 00000000 # GRAB
-* 55205441 554E5400 # U TAUNT
-* 53205441 554E5400 # S TAUNT
-* 44205441 554E5400 # D TAUNT
-* 4E4F4E45 00000000 # NONE
-* 534D4153 48000000 # SMASH
-* 4F464600 00000000 # OFF
-* 4F4E0000 00000000 # ON
+	.BA<-InputTable
+	.BA->$8069FE7C
+	.BA<-DataRefTable
+	.BA->$8069FE80
+	.BA<-ButtonTable
+	.BA->$8069FE84
+	.RESET
+	.GOTO->CustomControlCode
 
-* 42000000 80000000
+InputTable:
 
-* 42000000 92000000
-* 075CE56C 00000018
-* 5441554E 54000000 # TAUNT
-* 43484152 47450000 # CHARGE
-* 54494C54 00000000 # TILT
-* 42000000 80000000
+byte[4] 12, 15, 8, 13		# Input slots for each controller type. GC, Wiimote+Nunchuk, Wiimote, Classic
+
+DataRefTable:
+
+word[5] 0,0,0,0,0	# Addresses for MiscData[140], [150], [160], [170] and [180] from sc_selcharacter.pac
+word[2] 0,0			# Used for tags (0x14, 0x18)	# Previously 935CE3D4, 935CE3D8
+byte[4] 0,0,0,0		# Controller slot values (0x1C-0x1F)	# Previously 935CE3D0
+word[4] 0,0,0,0		# Used for controller pointers (0x20, 0x24, 0x28, 0x2C) # Previously 935CE300
+
+
+ButtonTable:
+# GC Button
+byte[8] 9, 0, 1, 2, 3, 4, 5, 6 		# 9: ATTACK, SPECIAL, JUMP, SHIELD, GRAB, UP TAUNT, SIDE TAUNT
+byte[8] 7, 8, 0, 0, 0, 0, 0, 0 		# DOWN TAUNT, NONE 
+#
+byte[8]   9,   0, 1, 2, 3, 4, 0xA, 0xB	# Control index value to save as.
+byte[8] 0xC, 0xE, 0, 0, 0, 0, 0, 0
+#
+# GC/CC Stick
+#
+byte[8] 10, 0, 1, 2,  3, 4, 11, 12	# 10: ATTACK, SPECIAL, JUMP, SHIELD, GRAB, TAUNT, CHARGE
+byte[8] 13, 8, 14, 0, 0, 0, 0, 0	# TILT, NONE, SMASH
+#
+byte[8] 10, 0, 1, 2, 3, 4, 0xA, 0xB
+byte[8] 0xC, 0xE, 5, 0, 0, 0, 0, 0
+#
+# GC/CC/Nunchuk Tap Jump
+#
+byte[8] 2, 10, 11, 0, 0, 0, 0, 0 # 2: ON, OFF
+byte[8] 0, 0,   0, 0, 0, 0, 0, 0
+
+byte[8] 2, 0x80, 0, 0, 0, 0, 0, 0 # Special. Toggles to 0x80 if Tap Jump on index 0x1F
+byte[8] 0, 0,    0, 0, 0, 0, 0, 0
+
+CustomControlCode:
+
+###
+# Set pointers to Misc Data blocks with text we need when generating the CSS.
+###
+op stwu r1, -0x40(r1) 	@ $806828C4	# Expand stack for below
+op stw r0, 0x44(r1)		@ $806828D0
+op lwz r0, 0x44(r1)		@ $80682914
+op addi r1, r1, 0x40	@ $8068291C
+HOOK @ $806828DC
+{
+	mr r30, r3				# Original operation
+	stw r29, 0x18(r1)
+	stw r28, 0x1C(r1)
+	
+	lis r29, 0x805A
+	lwz r29, 0x60(r29)
+	lwz r29, 0x04(r29)
+	lwz r29, 0x410(r29)		# sc_selcharacter.pac
+	# lis r29, 0x90E4
+	# lwz r29, 0x3430(r29)	# 90E43020 + 0x410. sc_selcharacter.pac
+	lis r28, 0				# Counter
+	
+	
+  
+AccessLoop: 
+	mr r3, r29					# We'll be using this pac file pointer a few times. 
+	li r4, 0					#
+	li r5, 1					# Misc Data	
+	mulli r12, r28, 10			# Each block we'll use is separated by 10
+	addi r6, r12, 140			# 140: Control Options. 150: GC, 160: Nunchuk, 170: Wiimote, 180: Classic
+	lis r7, 1					# \
+	subi r7, r7, 2				# / FFFE
+	bla 0x015DB4				# Get archive data
+	rlwinm r12, r28, 2, 0, 31
+	mulli r12, r28, 4			# Each of the 5 will be separated by a word
+	
+	lis r4, 0x806A 		# \
+	lwz r4, -0x180(r4)	# / POINTER to DataRefTable
+	stwx r3, r4, r12	# write the pointer to the appropriate slot!
+	
+	addi r28, r28, 1
+	cmpwi r28, 5
+	blt+ AccessLoop
+
+	lwz r29, 0x18(r1)	# \ Restore
+	lwz r28, 0x1C(r1)	# /	
+    li r3, 0x654		# Original operation
+	li r4, 42			# Original value.
+
+}
 
 HOOK @ $8069F254
 {
@@ -54,7 +138,10 @@ HOOK @ $8069FEAC
   lwz r26, 0(r3)
   cmpwi r26, 0x0;  bne- loc_0x48
   lbz r26, 0x57(r3)
-  lis r28, 0x935C;  ori r28, r28, 0xE300				# POINTER 935CE300 
+  # lis r28, 0x935C;  ori r28, r28, 0xE300				# POINTER 935CE300 
+	lis r28, 0x806A 		# \
+	lwz r28, -0x180(r28)	# | POINTER to DataRefTable
+	addi r28, r28, 0x20		# /
   cmpwi r26, 0x31;  bne- loc_0x24;  stw r3, 0x00(r28)		# 8156A77C for P1???
 
 loc_0x24:
@@ -70,13 +157,26 @@ loc_0x48:
   mr r26, r3
 }
 
-###TODO: FIX THIS ONE IN PARTICULAR
+###TODO: FIX THIS ONE IN PARTICULAR BY PORTING IT OUT. THIS CODE IS WAY TOO AGGRESIVELY PLACED IN INPUTS AND ONLY ACCESSES GC
 HOOK @ $80029738
 {
+	lis r31, 0x805C; lwz r31,-0x7450(r31) 	# 805B8BB0
+	cmpwi r31, 0; beq- skipInit # Game uninitialized
+	lwz r30, 0xC(r31)
+	lwz r31, 8(r31) 
+	cmpwi r31, 4; blt+ skipInit
+	cmpwi r31, 6; bgt+ skipInit
+	cmpwi r30, 3; blt+ skipInit
+	cmpwi r30, 4; bgt+ skipInit # only activate on CSS
+onCSS:
+	
   li r31, 0x0;  addi r26, r26, 0x6;  cmpwi r31, 0x10;  bge- loc_0x3D4		# wtf
 
 loc_0x10:
-  lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300 where pointer is kept!
+  # lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300 where pointer is kept!
+	lis r30, 0x806A 		# \
+	lwz r30, -0x180(r30)	# | POINTER to DataRefTable
+	addi r30, r30, 0x20		# /  
   lwzx r5, r30, r31;  cmpwi r5, 0x0;  beq- loc_0x3C4	# Always loads directly from 935CE300?????? Why lwzx???
   lhz r4, 100(r5)		# BUGGY
   lhz r30, 0(r26);  and r4, r4, r30;  sth r4, 0(r26)
@@ -92,7 +192,10 @@ loc_0x10:
   add r30, r30, r30
   addi r30, r30, 0x6E
   lhzx r30, r5, r30		# Get the port 
-  lis r6, 0x935C;  ori r6, r6, 0xE3D0		# POINTER TO 935CE3D0		# Custom point where we stored tag index
+  # lis r6, 0x935C;  ori r6, r6, 0xE3D0		# POINTER TO 935CE3D0		# Custom point where we stored tag index
+  	lis r6, 0x806A 		# \
+	lwz r6, -0x180(r6)	# | POINTER to DataRefTable
+	addi r6, r6, 0x1C	# /
   li r4, 0x0
   lbz r0, 0(r6);  cmpwi r4, 0x4;  bge- loc_0xA0
 
@@ -139,7 +242,10 @@ loc_0xF8:
 
 loc_0x144:
   andi. r6, r4, 0x810;  cmpwi r6, 0x0;  beq- loc_0x160			# Y OR Z
-  lis r6, 0x935C;  ori r6, r6, 0xE3D0			# POINTER TO 935CE3D0	# Sets byte to 1 if in custom controls
+  # lis r6, 0x935C;  ori r6, r6, 0xE3D0			# POINTER TO 935CE3D0	# Sets byte to 1 if in custom controls
+  	lis r6, 0x806A 		# \
+	lwz r6, -0x180(r6)	# | POINTER to DataRefTable
+	addi r6, r6, 0x1C	# /
   rlwinm r3, r31, 30, 0, 31;  stbx r30, r6, r3							# 0 if entering custom controls
 
 loc_0x160:
@@ -189,7 +295,10 @@ loc_0x24C:
   cmpwi r4, 0x2;  bne- loc_0x310
   lhz r4, 0(r26);  andi. r30, r4, 0x200;  cmpwi r30, 0x0;  beq- loc_0x2AC
   li r4, 0xFF
-  lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0 # Sets to FF to let it know something?
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0 # Sets to FF to let it know something?
+  	lis r3, 0x806A 		# \
+	lwz r3, -0x180(r3)	# | POINTER to DataRefTable
+	addi r3, r3, 0x1C	# /
   rlwinm r6, r31, 30, 0, 31
   stbx r4, r3, r6		# Set port byte to -1
   li r4, 0x1;  stb r4, 96(r5)
@@ -263,12 +372,16 @@ loc_0x3C4:
   blt+ loc_0x10
 
 loc_0x3D4:
-  lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300		# Sets ports 1-4
+  # lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300		# Sets ports 1-4
+  	lis r30, 0x806A 		# \
+	lwz r30, -0x180(r30)	# | POINTER to DataRefTable
+	addi r30, r30, 0x20		# /
   li r5, 0x0
   stw r5, 0(r30)		# \ 
   stw r5, 4(r30)		# | Reset all 4 ports 
   stw r5, 8(r30)		# |
   stw r5, 12(r30)		# /
+skipInit:
   lis r26, 0x805B;  ori r26, r26, 0xAD00
   lwz r0, 68(r1)
 }
@@ -280,15 +393,29 @@ HOOK @ $8069F684
   lbz r3, 96(r6);  cmpwi r3, 0x2;  blt- loc_0x1DC
   mr r28, r5							# Index from the top of which option you are currently on
   addi r29, r5, 0x0						# Store it in r29 AND r28??????
+ 
   cmpwi r3, 0x2;  bne- loc_0xC8
-  mulli r3, r5, 0x8						# Each option is separated by 8 characters!
-  lis r4, 0x935C;  ori r4, r4, 0xE310;  add r3, r3, r4	# POINTER TO 935CE310	# BUTTONS
-  lbz r4, 0(r3);  stb r4, 0(r30)
-  cmpwi r4, 0x0;  beq- loc_0x58
+	 mr r29, r6
+	
+  	lis r3, 0x806A; lwz r3, -0x180(r3); lwz r3, 4(r3)		# Misc Data 150  
+	mr r4, r5			# Message ID
+	addi r5, r1, 0x48	# Where to write length
+	addi r6, r1, 0x4C		
+	bla 0x06B134		# Get the message data
+	lwz r4, 0x48(r1)	# start of array of characters
+	mr r5, r3			# length
+	mr r3, r30			# r30 = where to write to characters, moved to r3
+	bla 0x004338		# Copy text
+	addi r30, r6, 1	
+	
+	
+	mr r5, r28
+    mr r6, r29
+	mr r29, r28
 
-loc_0x48:	# String write loop!
-  lbzu r4, 1(r3);  stbu r4, 1(r30)
-  cmpwi r4, 0x0;  bne+ loc_0x48			# Write string until null terminator is written!
+
+
+
 
 loc_0x58:
   lis r3, 0x3A20;  stw r3, 0(r30)		# ": "
@@ -310,7 +437,7 @@ loc_0x98:
 loc_0xA8:
   cmpwi r4, 0xE;  bne- loc_0xB8			# if option is NONE internally
   li r4, 0x8							# make it choose option 8 (NONE)
-  bc 20, 20, 0xc4
+  b loc_0xC4
 
 loc_0xB8:
   cmpwi r4, 0xA;  blt- loc_0xC4			# 
@@ -320,49 +447,43 @@ loc_0xC4:								# MOVE IT OVER
   addi r29, r4, 0x0
 
 loc_0xC8:
-  lbz r3, 111(r6);  cmpwi r3, 0x1;  bne- loc_0xD8		# if the entry count is 1 (technically 2), then use 0xA and 0xB
-  addi r29, r29, 0xA					# TAP JUMP OFF, ON are 0xA and 0xB
+  lbz r3, 111(r6);  cmpwi r3, 0x1;  bne- loc_0xD8		# if the entry count is 1 (technically 2), then use indexes 10 and 11
+  addi r29, r29, 10					# TAP JUMP OFF, ON are 10 and 11
 
 loc_0xD8:
-  lis r3, 0x935C;  ori r3, r3, 0xE370	# POINTER TO 935CE370	# ATTACK, SPECIAL, JUMP, SHIELD, GRAB, U TAUNT,
   lbz r4, 96(r6);  cmpwi r4, 0x2;  bne- loc_0x138				# S TAUNT, D TAUNT, NONE, SMASH, OFF, ON
   cmpwi r28, 0x8;  bne- loc_0x138		# Branch if not the C-Stick
   cmpwi r29, 0x5;  bne- loc_0x10C
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT
-  li r29, 0x0			# TAUNT (5)
+  li r29, 12			# TAUNT (5)
   b loc_0x138
   
 loc_0x10C:
-  cmpwi r29, 0x6;  bne- loc_0x124
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT	
-  li r29, 0x1			# CHARGE (6)
+  cmpwi r29, 0x6;  bne- loc_0x124	
+  li r29,13			# CHARGE (6)
   b loc_0x138
 
 loc_0x124:
   cmpwi r29, 0x7;  bne- loc_0x138
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT	
-  li r29, 0x2			# TILT (7)
+  li r29, 14			# TILT (7)
 
 loc_0x138:
   cmpwi r4, 0x3;  bne- loc_0x190
   lbz r28, 99(r6);  cmpwi r28, 0x8;  bne- loc_0x190				# SKIP THESE IF NOT THE C-STICK
 					cmpwi r29, 0x5;  bne- loc_0x164
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT
-  li r29, 0x0		# TAUNT
+  li r29, 12		# TAUNT
   b loc_0x190
 
 loc_0x164:
   cmpwi r5, 0x6;  bne- loc_0x17C
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT
-  li r29, 0x1		# CHARGE
+  li r29, 13		# CHARGE
   b loc_0x190
 
 loc_0x17C:
   cmpwi r29, 0x7;  bne- loc_0x190
-  lis r3, 0x935C;  ori r3, r3, 0xE56C	# POINTER TO 935CE56C	# TAUNT, CHARGE, TILT
-  li r29, 0x2		# TILT
+  li r29, 14		# TILT
 
 loc_0x190:
+/*
   mulli r29, r29, 0x8				# OFFSET TO EACH OPTION RELATIVE TO 935CE56C (NONE is 8th regardless)
   add r3, r3, r29
   lbz r4, 0(r3);  stb r4, 0(r30)
@@ -373,9 +494,23 @@ loc_0x1A8:
   lbzu r4, 1(r3);  stbu r4, 1(r30)
   cmpwi r4, 0x0
   bne+ loc_0x1A8					# WRITE STRING UNTIL NULL TERMINATOR IS FOUND
+*/
 
+  	lis r3, 0x806A; lwz r3, -0x180(r3); lwz r3, 0(r3)		# Misc Data 140  
+	mr r4, r29			# Message ID
+	addi r5, r1, 0x48	# Where to write length
+	addi r6, r1, 0x4C		
+	bla 0x06B134		# Get the message data
+	lwz r4, 0x48(r1)	# start of array of characters
+	mr r5, r3			# length
+	mr r3, r30			# r30 = where to write to characters, moved to r3
+	bla 0x004338		# Copy text
+	li r3, 0
+	stb r3, 1(r6)		# Add terminator
+	
 loc_0x1B8:
   mr r3, r31
+  # mr r7, r18
   lwz r31, 124(r1)
   lwz r30, 120(r1)
   lwz r29, 116(r1)
@@ -422,6 +557,9 @@ HOOK @ $8069B868
   stb r19, 604(r29)
   mr r19, r3
 }
+###
+# Tag name creation using Z
+###
 HOOK @ $8069B87C
 {
   lbz r3, 604(r29);  cmpwi r3, 0x0;  bne- loc_0x70
@@ -433,24 +571,39 @@ loc_0x3C:
   mulli r3, r19, 0x124			 # Tags are separated by this amount
   lis r4, 0x9017;  ori r4, r4, 0x2E30		# POINTER TO 90172E30
   add r4, r4, r3
-  lis r3, 0x935C;  ori r3, r3, 0xE3D8;  stw r4, 0(r3)	# POINTER TO 935CE3D8
+  lis r3, 0x806A; lwz r3, -0x180(r3); stw r4, 0x18(r3)
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D8;  stw r4, 0(r3)	# POINTER TO 935CE3D8
   lwz r4, 0(r4)
-  lis r3, 0x935C;  ori r3, r3, 0xE3D4;  stw r4, 0(r3)	# POINTER TO 935CE3D4
+  stw r4, 0x14(r3)
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D4;  stw r4, 0(r3)	# POINTER TO 935CE3D4
   li r4, 0x1;  stb r4, 613(r29)
 
 loc_0x70:
   li r3, 0x0;  stb r3, 604(r29)
   mr r3, r20
 }
-
+###
+# Tag name creation using Z
+###
 HOOK @ $8069B9F8
 {
   lis r3, 0x8067;  ori r3, r3, 0x4B64;  mtctr r3;  addi r3, r29, 0x370;  bctrl 	# close/[MuSelctChrNameEntry]
-  lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0
+ 	lis r3, 0x806A 		# \
+	lwz r3, -0x180(r3)	# | POINTER to DataRefTable
+	addi r3, r3, 0x1C	# /
   li r11, 0xFF;  stbx r11, r3, r30				# set to -1 the port
   lbz r3, 604(r29);  cmpwi r3, 0x0;  bne- loc_0x98
-  lis r3, 0x935D;  lwz r3, -7212(r3)				# POINTER TO 935CE3D4
-  lis r11, 0x935D;  lwz r11, -7208(r11)				# POINTER TO 935CE3D8
+  # lis r3, 0x935D;  lwz r3, -7212(r3)				# POINTER TO 935CE3D4
+  # lis r11, 0x935D;  lwz r11, -7208(r11)				# POINTER TO 935CE3D8
+  
+  lis r3, 0x806A; lwz r3, -0x180(r3)
+  
+  lwz r11, 0x18(r3)
+  lwz r3, 0x14(r3)		# Data Pointer  
+  cmpwi r11, 0	# TODO: figure out cause. Prevent break. 
+  beq- loc_0x98	# Result is backing out to the CSS instead of the tag selected.
+  
   stw r3, 0(r11)
   li r3, 0x1;  stb r3, 612(r29)
   lis r3, 0x8069;  ori r3, r3, 0xF240;  mtctr r3
@@ -496,7 +649,10 @@ HOOK @ $8069F9E4
 {
   li r5, 0x0
   lbz r20, 96(r24);  cmpwi r20, 0x1;  bne- loc_0x5C
-  lis r20, 0x935C;  ori r20, r20, 0xE3D0			# POINTER TO 935CE3D0
+  # lis r20, 0x935C;  ori r20, r20, 0xE3D0			# POINTER TO 935CE3D0
+  	lis r20, 0x806A 		# \
+	lwz r20, -0x180(r20)	# | POINTER to DataRefTable
+	addi r20, r20, 0x1C		# /
   li r19, 0x0
   lbz r18, 0(r20);  cmpwi r19, 0x4;  bge- loc_0x44
 loc_0x28:
@@ -518,7 +674,10 @@ loc_0x5C:
 
 HOOK @ $806A004C
 {
-  lis r3, 0x935C;  ori r3, r3, 0xE3D0		# POINTER TO 935CE3D0
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D0		# POINTER TO 935CE3D0
+  	lis r3, 0x806A 		# \
+	lwz r3, -0x180(r3)	# | POINTER to DataRefTable
+	addi r3, r3, 0x1C	# /
   li r5, 0x0
   lbz r6, 0(r3);  cmpwi r5, 0x4;  bge- loc_0x34		# It is always 0!
 
@@ -540,12 +699,14 @@ loc_0x3C:
 loc_0x4C:
   lis r3, 0x805A
 }
-HOOK @ $806828E0
+HOOK @ $806828C8
 {
-  lis r3, 0x935C;  ori r3, r3, 0xE3D0	# POINTER TO 935CE3D0
-  lis r4, 0xFFFF;  ori r4, r4, 0xFFFF;  stw r4, 0(r3)		# Reset all controllers to -1
-  li r4, 0x2A
-  li r3, 0x654
+  # lis r3, 0x935C;  ori r3, r3, 0xE3D0	# POINTER TO 935CE3D0
+  	lis r5, 0x806A 		# \
+	lwz r5, -0x180(r5)	# / POINTER to DataRefTable
+
+   li r0, -1;  stw r0, 0x1C(r5)		# Reset all controllers to -1
+	mflr r0 # Original operation
 
 }
 HOOK @ $8069FECC
@@ -564,7 +725,10 @@ HOOK @ $806A0714
 {
   lis r4, 0x100;  stw r4, 96(r3)
   lbz r4, 87(r3)
-  lis r5, 0x935C;  ori r5, r5, 0xE3CF	# POINTER TO 935CE3CF
+  # lis r5, 0x935C;  ori r5, r5, 0xE3CF	# POINTER TO 935CE3CF
+  	lis r5, 0x806A 		# \
+	lwz r5, -0x180(r5)	# | POINTER to DataRefTable
+	addi r5, r5, 0x1B	# / 1C - 1 since D0 - 1
   andi. r4, r4, 0xF
   li r6, 0xFF;  stbx r6, r5, r4
   stwu r1, -16(r1)

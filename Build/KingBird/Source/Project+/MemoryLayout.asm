@@ -17,6 +17,12 @@ Stage Resource 6.4MB -> 6.0MB [DukeItOut]
 #########################################
 int 0x600000 @ $80421D64
 
+###############################################################
+Memory Extension for CSS/SSS MenuResource (+0.48MB) [DukeItOut]
+###############################################################
+#int 0x73EA00 @ $80422384 #+0.88MB version. Disabled for now so characters can take advanage of an extra 0.4MB due to the above code
+int 0X6D8300 @ $80422384  #+0.48MB version. Keep this size synchronized with the Stage Resource change! (i.e. if Stage Resource = 6.4MB, this can be made +0.88)
+
 ###########################################
 !Network Resource 1.4MB -> 1.1MB [DukeItOut]
 ###########################################
