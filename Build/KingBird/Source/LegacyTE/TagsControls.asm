@@ -83,34 +83,94 @@ loc_0x58:
 }
 
 
-######################################################################################################
-[Project+] X To toggle Rumble V1.2 (requires Fracture's Controls) [ChaseMcDizzle, Fracture, Yohan1044]
-######################################################################################################
-#Alters Rumble of tag
+#################################################################################################################
+[Project+] X To toggle Rumble V1.3 (requires Fracture's Controls) [ChaseMcDizzle, Fracture, Yohan1044, DukeItOut]
+#
+# 1.3: Moved slot rumble from Fracture's Controls and added rumble and sound effect support.
+#################################################################################################################
+.alias SFX_ToggleRumble	= 	0x24	# (Menu 15)
+.alias TagSize			=	0x124	# Assumed size of each tag
+.macro playRumble()
+{
+	lwz r4, -0x20(r3)		# Controller ID number
+	lwz r3, -0x43E0(r13)	# Controller manager
+	li r5, 10				# Rumble Type
+	bla 0x02A9E8			# Cause controller rumble 
+}
+#Alters Rumble of tag AND slot
 HOOK @ $8069FEC8
 {
-  lbz r14, 0x60(r3)
-  cmpwi r14, 0x1;  bgt- loc_0x60
-  andi. r14, r6, 0x400;  beq- loc_0x60	# Was X pressed?
-  lwz r14, 0x44(r3)
-  cmpwi r14, 0xFFFF;  beq- loc_0x60
-  cmpwi r14, 0x0;  beq- loc_0x60
+  
+  
+	lbz r14, 0x60(r3);  	cmpwi r14, 0x1;  bne- customPage	# Is this the normal tag menu?
+	andi. r14, r6, 0x400;  	beq- noXPress					# Was X pressed?
+	
+	
+	lis r4, 0x9017;  ori r4, r4, 0xBE60	# Where player slot rumble info is placed
+	lbz r27, 0x57(r3);  subi r27, r27, 0x31	# Check for player slot
+	
+	
+	lwz r14, 0x44(r3);  cmpwi r14, 0;  	blt- notSlot		# Is this an invalid slot?
+										beq- notTag			# Is this the player slot?
+	lwz r12, 0x6C(r3);	cmpw r14, r12;  bgt- notSlot		# Is this an invalid slot?
   subi r14, r14, 0x1
   mulli r14, r14, 0x2
   addi r14, r14, 0x70
   lhzx r14, r3, r14
-  mulli r23, r14, 0x124
+  mulli r23, r14, TagSize
   lis r15, 0x805A
   lwz r15, 0xE0(r15)
   lwz r15, 0x28(r15)
   add r15, r15, r23
   lbz r24, 0xEC(r15)
-  xori r24, r24, 1
+  xori r24, r24, 1			# Toggle the tag's rumble!
   stb r24, 0xEC(r15)
+  b finishToggle
+notTag:  
+	lbzx r14, r4, r27;  xori r14, r14, 1;  stbx r14, r4, r27
+	li r24, 1		# Always make it assume rumble for the below context if no tag!
+finishToggle:
+	lbzx r14, r4, r27	# Check player rumble slot (again)
+	mr r27, r5
+	cmpwi r24, 1; bne+ noRumbleShake	# Does the tag allow rumble?
+	cmpwi r14, 1; bne+ noRumbleShake	# Does the slot allow rumble?
 
-loc_0x60:
-  lwz r0, 0xC(r4)
-  mr r24, r7
+	%playRumble()
+noRumbleShake:
+	li r4, SFX_ToggleRumble	# \
+	lis r3, 0x805A			# | Play Sound Effect!
+	bla 0x6A83F4			# /	
+	mr r3, r26		# restore r3
+	mr r5, r27		# restore r5
+noXPress:
+notSlot:
+customPage:
+  lwz r0, 0xC(r28)	# Most recent input
+  mr r4, r28		# Restore r4
+  mr r24, r7		# Original operation
+}
+# Alters rumble of slot
+HOOK @ $8069FECC
+{
+	lbz r4, 0x60(r3);  cmpwi r4, 0x1;  bgt- notTagPage
+	andi. r14, r6, 0x400;  beq+ noRumble		# X BUTTON
+	lwz r14, 0x44(r3);  cmpwi r14, 0x0;  bne- notTagPage	# Only activate for the player slot! 
+  
+	lbz r14, 0x57(r3);  subi r14, r14, 0x31	# Check for player slot
+	lis r4, 0x9017;  ori r4, r4, 0xBE60	# POINTER TO 9017BE60
+	lbzux r14, r4, r14;  xori r14, r14, 1;  stb r14, 0(r4)
+    cmpwi r14, 1; bne noTriggerRumble		# Only play rumble if it is act
+CauseRumbleEffect:	
+	%playRumble()
+noTriggerRumble:
+
+   
+	mr r3, r26		# Restore r3
+	lwz r0, 0xC(r28)	# Get back r0
+  
+noRumble:
+notTagPage:
+	rlwinm. r4, r0, 0, 23, 23	# Original operation
 }
 #Scrolls Through list
 HOOK @ $806A01D0
@@ -211,7 +271,7 @@ renderColours:
 portRumble:
   lbz r16, 0x60(r24)
   cmpwi r16, 1;  bgt- 0x24
-  lbz r16,87(r24)
+  lbz r16, 0x57(r24)
   subi r16,r16,49
   lis r15, 0x9017;  ori r15,r15, 0xBE60
   lbzx r16,r15,r16
@@ -232,9 +292,9 @@ HOOK @ $8069fa0c
 
   cmpwi r16, 1
   bne %end%
-  li r20, 0x4F  #red
-  li r19, 0x2A  #green
-  li r18, 0x70  #blue
+  li r20, 0x00  #red
+  li r19, 0x90  #green
+  li r18, 0x90  #blue
 }
 #Off Centre Tag
 HOOK @ $8069fa1c
@@ -242,9 +302,9 @@ HOOK @ $8069fa1c
   li r18, 0x50
   cmpwi r16, 1
   bne %end%
-  li r20, 0x4F  #red
-  li r19, 0x2A  #green
-  li r18, 0x70  #blue
+  li r20, 0x10  #red
+  li r19, 0x80  #green
+  li r18, 0x80  #blue
 }
 #Changing from Centred to Off Centre
 HOOK @ $806a05c8 
@@ -252,9 +312,9 @@ HOOK @ $806a05c8
   li r8, 0xFF
   cmpwi r17, 1
   bne %end%
-  li r5, 0x4F
-  li r6, 0x2A
-  li r7, 0x70
+  li r5, 0x10
+  li r6, 0x80
+  li r7, 0x80
 }
 
 ###########################################################

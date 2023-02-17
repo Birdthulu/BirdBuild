@@ -1,9 +1,10 @@
 ##################################################
-CSS Custom Controls V1.51 [Fracture, DukeItOut]
+CSS Custom Controls V1.6 [Fracture, DukeItOut]
 ##################################################
 # Rewritten for stability and feature
 # reasons to prevent it from occupying
-# inappropriate memory
+# inappropriate memory or accessing
+# input systems invasively.
 #
 # Made portable. Note: It is now dependent 
 # on sc_selcharacter.pac containing Msg
@@ -17,8 +18,15 @@ CSS Custom Controls V1.51 [Fracture, DukeItOut]
 .alias SFX_Exit3		=	0x08	# (Menu  8)
 .alias SFX_MaxPage		=	0x03	# (Menu  4)
 .alias SFX_SelectOption =	0x01	# (Menu  2)
-.alias SFX_ToggleRumble	= 	0x24	# (Menu 15)
+.alias SFX_PinTag		=	0xD7	# (Fighter Common 159)
 
+.macro playSFX(<soundID>)
+{
+	li r4, <soundID>
+	lis r3, 0x805A			# \ Play Sound Effect!
+	bla 0x6A83F4			# /	
+}
+#####
 HOOK @ $8069FE78	# Done so there's room for a pointer below.
 {
 	lwz r0, 0x24(r1)
@@ -156,236 +164,227 @@ loc_0x3C:
 loc_0x48:
   mr r26, r3
 }
-
-###TODO: FIX THIS ONE IN PARTICULAR BY PORTING IT OUT. THIS CODE IS WAY TOO AGGRESIVELY PLACED IN INPUTS AND ONLY ACCESSES GC
-HOOK @ $80029738
+HOOK @ $8069FE88		# Tag menu input. (Note that page "0" (for writing tags) is not a part of this function! It won't read from here.)
 {
-	lis r31, 0x805C; lwz r31,-0x7450(r31) 	# 805B8BB0
-	cmpwi r31, 0; beq- skipInit # Game uninitialized
-	lwz r30, 0xC(r31)
-	lwz r31, 8(r31) 
-	cmpwi r31, 4; blt+ skipInit
-	cmpwi r31, 6; bgt+ skipInit
-	cmpwi r30, 3; blt+ skipInit
-	cmpwi r30, 4; bgt+ skipInit # only activate on CSS
-onCSS:
+	stw r0, -4(r1);  mflr r0
+	stw r0, 4(r1);  mfctr r0
+	stw r0, -8(r1);
+
+	stwu r1, -132(r1)
+	stmw r3, 8(r1)
+  
+	mr r5, r3				# Main pointer for information
+	mr r26, r3
+	mr r28, r4				# Pointer to recent inputs
+  
+	lwz r14, -0x20(r3)		# \ Wiimote integration is desired, but for right now, 
+	cmpwi r14, 4			# | this is only covering GC for testing functionality.
+	bge+ normalInputs		# / I'll try to add these afterwards at a later time.
+	lbz r31, 0x60(r3);  cmpwi r31, 0x1;  beq+ TagPage		# go to check Y and Z presses if in page 1 (the normal tag page)
+						cmpwi r31, 0x2;  blt- normalInputs	# Check if on page 2. If not, do normal behavior
+###  
+	mr r4, r31				# page index 
 	
-  li r31, 0x0;  addi r26, r26, 0x6;  cmpwi r31, 0x10;  bge- loc_0x3D4		# wtf
+###########################
+# PAGE 2/3: Custom Controls
+###########################	
+	lwz r6, 0x6C(r5)		# Amount of tags
+	lwz r30, 0x44(r5) 		# Current tag index
+	
+	cmpwi r30, 0; bge+ ValidValue	# If this is a negative value 
+	
+	li r30, 0; stb r30, 0x67(r30)				# then set it to the first index instead
+	li r4, 4		# Indicate an invalid page to suppress inputs this frame!
+	
+ValidValue:
+	lwz r6, 0x6C(r5); cmpw r30, r6; ble+ ValidTag	# If the value is higher than the amount of tags
+	mr r30, r6; stb r30, 0x67(r30)					# calibrate it to the highest possible value!
+	li r4, 4		# Indicate an invalid page to suppress inputs this frame!
+ValidTag:
+	
+	
+# Check for inputs	
+	lwz r12, 0x14(r28)	# Check sustained inputs
+	li r11, 0			# Variable we'll use to suppress inputs
+	
+	cmpw r30, r6; blt+ DownPossible
+	ori r11, r11, 4		# 4 = Down
+DownPossible:
+	cmpwi r30, 0; bgt+ UpPossible
+	ori r11, r11, 8		# 8 = Up
+UpPossible:
+	not r11, r11		# Invert
+	and r12, r12, r11
+	stw r12, 0x14(r28)	# Suppress up/down inputs as needed based on slot position.
 
-loc_0x10:
-  # lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300 where pointer is kept!
-	lis r30, 0x806A 		# \
-	lwz r30, -0x180(r30)	# | POINTER to DataRefTable
-	addi r30, r30, 0x20		# /  
-  lwzx r5, r30, r31;  cmpwi r5, 0x0;  beq- loc_0x3C4	# Always loads directly from 935CE300?????? Why lwzx???
-  lhz r4, 100(r5)		# BUGGY
-  lhz r30, 0(r26);  and r4, r4, r30;  sth r4, 0(r26)
-  eqv r4, r4, r30;  sth r4, 100(r5)	# BUGGY
-					
-  lbz r4, 96(r5); 		 # BUGGY
-					cmpwi r4, 0x1;  bne- loc_0x1AC
-  lbz r6, 71(r5);  		# BUGGY
-				subi r30, r6, 0x1
-  lbz r4, 111(r5);  	# BUGGY
-			cmplw r30, r4;  bge- loc_0x1A8
-  lbz r30, 71(r5)
-  add r30, r30, r30
-  addi r30, r30, 0x6E
-  lhzx r30, r5, r30		# Get the port 
-  # lis r6, 0x935C;  ori r6, r6, 0xE3D0		# POINTER TO 935CE3D0		# Custom point where we stored tag index
-  	lis r6, 0x806A 		# \
-	lwz r6, -0x180(r6)	# | POINTER to DataRefTable
-	addi r6, r6, 0x1C	# /
-  li r4, 0x0
-  lbz r0, 0(r6);  cmpwi r4, 0x4;  bge- loc_0xA0
+	cmpwi r4, 0x2; bne- CheckPage3
+  
+###############################
+# PAGE 2: Custom Input Settings
+###############################	
+	
 
-loc_0x84:
-  cmpw r0, r30;  bne- loc_0x90
-				b loc_0xA8
-
-loc_0x90:
-  lbzu r0, 1(r6);  addi r4, r4, 0x1;  cmpwi r4, 0x4;  blt+ loc_0x84
-
-loc_0xA0:
-  lis r4, 0xFFFF;  ori r4, r4, 0xFFFF				# Set to -1
-
-loc_0xA8:
-  addi r6, r5, 0x167;  li r3, 0x0
-  lbz r0, 0(r6);  cmpwi r3, 0x4;  bge- loc_0xD8
-
-loc_0xBC:
-  cmpw r0, r30;  bne- loc_0xC8
-				b loc_0xE0
-
-loc_0xC8:
-  lbzu r0, 4(r6);  addi r3, r3, 0x1;  cmpwi r3, 0x4;  blt+ loc_0xBC		# Loop 4 times. Why not just do lbzu r0, 0x10(r6)? 
-
-loc_0xD8:
-  lis r3, 0xFFFF;  ori r3, r3, 0xFFFF				# Set to -1
-
-loc_0xE0:
-  and r4, r4, r3;  cmpwi r4, 0x0;  blt- loc_0xF4
-  li r4, 0x0		# Force it to behave as if there was no input if there was no input?!?!?!?
-  b loc_0xF8
-
-loc_0xF4:
-  lhz r4, 0(r26);  
-loc_0xF8: 
-  andi. r6, r4, 0x1000;  cmpwi r6, 0x0;  beq- loc_0x144		# START BUTTON	
-  lwz r6, 68(r5);  mulli r6, r6, 0x2;  addi r6, r6, 0x6E
-  lhzx r6, r5, r6;  mulli r6, r6, 0x124		# How much each tag is separated by
-  lhz r3, 112(r5);  mulli r3, r3, 0x124		# How much each tag is separated by 
-  lis r4, 0x9017;  ori r4, r4, 0x2E30			# POINTER TO 90172E30. Location of tags but offset by 0x10
-  lwzx r3, r4, r3;  subi r3, r3, 0x1;  stwx r3, r4, r6
-  lhz r4, 100(r5); andi. r4, r4, 0xEFFF;  sth r4, 100(r5)	# TEST CONTROLLER BUT FILTER OUT START BUTTON
-  li r4, 0x0
-
-loc_0x144:
-  andi. r6, r4, 0x810;  cmpwi r6, 0x0;  beq- loc_0x160			# Y OR Z
-  # lis r6, 0x935C;  ori r6, r6, 0xE3D0			# POINTER TO 935CE3D0	# Sets byte to 1 if in custom controls
-  	lis r6, 0x806A 		# \
-	lwz r6, -0x180(r6)	# | POINTER to DataRefTable
-	addi r6, r6, 0x1C	# /
-  rlwinm r3, r31, 30, 0, 31;  stbx r30, r6, r3							# 0 if entering custom controls
-
-loc_0x160:
-  andi. r30, r4, 0x10;  cmpwi r30, 0x0;  beq- loc_0x174			# Z BUTTON
-  li r4, 0x0;  stb r4, 96(r5)
-
-loc_0x174:
-  andi. r4, r4, 0x800;  cmpwi r4, 0x0;  beq- loc_0x1A8			# Y BUTTON
-  li r4, 0x2;  stb r4, 96(r5)
-  lbz r4, 71(r5);  stb r4, 97(r5)
-  lbz r4, 111(r5);  stb r4, 98(r5)
-  li r4, 0x0;  stb r4, 103(r5)				# Set to top of list
-  li r4, 0xB;  stb r4, 102(r5)				# Set there to be 11 options (Tap is 0xB)
-
-loc_0x1A8:
-  b loc_0x3C4
-
-loc_0x1AC:
-  lbz r30, 71(r5);  cmpwi r30, 0xFF;  bne- loc_0x1C4
-  li r30, 0x0;  stb r30, 103(r5)
-  li r4, 0x4
-
-loc_0x1C4:
-  lbz r6, 111(r5);  cmpw r30, r6;  ble- loc_0x1DC
-  addi r30, r6, 0x0;  stb r30, 103(r5)
-  li r4, 0x4
-
-loc_0x1DC:
-  cmpw r30, r6;  bne- loc_0x214
-  lbz r6, 43(r26);  extsb r6, r6;  cmpwi r6, 0xFFC3;  bgt- loc_0x1FC
-  li r6, 0x0;  stb r6, 43(r26)
-
-loc_0x1FC:
-  lbz r6, 1(r26);  andi. r3, r6, 0x4;  cmpwi r3, 0x0;  beq- loc_0x214
-  andi. r6, r6, 0xFFFB;  stb r6, 1(r26)
-
-loc_0x214:
-  cmpwi r30, 0x0;  bne- loc_0x24C
-  lbz r6, 43(r26);  extsb r6, r6;  cmpwi r6, 0x3D;  blt- loc_0x234
-  li r6, 0x0;  stb r6, 43(r26)
-
-loc_0x234:
-  lbz r6, 1(r26);  andi. r3, r6, 0x8;  cmpwi r3, 0x0;  beq- loc_0x24C
-  andi. r6, r6, 0xFFF7;  stb r6, 1(r26)
-
-loc_0x24C:
-  cmpwi r4, 0x2;  bne- loc_0x310
-  lhz r4, 0(r26);  andi. r30, r4, 0x200;  cmpwi r30, 0x0;  beq- loc_0x2AC
-  li r4, 0xFF
-  # lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0 # Sets to FF to let it know something?
+  
+	lwz r4, 0xC(r28);  	andi. r30, r4, 0x100;  bne- APressP2
+						andi. r30, r4, 0x200;  beq+ normalInputs
+BPressP2:
+	li r4, 0xFF		
+	lbz r31, 0x57(r5)		# 
+	subi r31, r31, 0x31		# Get player slot
+	
   	lis r3, 0x806A 		# \
 	lwz r3, -0x180(r3)	# | POINTER to DataRefTable
 	addi r3, r3, 0x1C	# /
-  rlwinm r6, r31, 30, 0, 31
-  stbx r4, r3, r6		# Set port byte to -1
-  li r4, 0x1;  stb r4, 96(r5)
-  lbz r4, 97(r5);  stb r4, 103(r5)
-  lbz r4, 98(r5);  stb r4, 102(r5)
-  lhz r4, 100(r5);  andi. r4, r4, 0xFDFF;  sth r4, 100(r5)
-  lhz r4, 0(r26);  andi. r4, r4, 0xFDFF;  sth r4, 0(r26)
-  b loc_0x30C
+	rlwinm r6, r31, 30, 0, 31
+	stbx r4, r3, r6		# Set port byte to -1
+	li r4, 0x1;  stb r4, 0x60(r5)		# Change to page 1!
+	lbz r4, 0x61(r5);  stb r4, 0x67(r5)
+	lbz r4, 0x62(r5);  stb r4, 0x66(r5)
+	%playSFX(SFX_Exit2)
+	b suppressInput
 
-loc_0x2AC:
-  andi. r30, r4, 0x100;  cmpwi r30, 0x0;  beq- loc_0x30C	# A BUTTON for entering the customization
-  li r4, 0x3;  stb r4, 96(r5)
-  lbz r4, 71(r5);  stb r4, 99(r5)
-  li r30, 0x0;  stb r30, 103(r5)
-  li r30, 0x8;  lbz r4, 99(r5)				# Normally, there are 9 options (0x8 is the highest)
-  cmpwi r4, 0x8;  bne- loc_0x2E4			# If the setting 8, it is the C-Stick
+APressP2:
+  li r4, 0x3;  stb r4, 0x60(r5)				# Change to page 3!
+  lwz r4, 0x44(r5);  stb r4, 0x63(r5)		# Store index
+  li r30, 0x0;  stb r30, 0x67(r5)			# Set to the top of the index instead of using the control setting?
+  li r30, 8;  lbz r4, 0x63(r5)				# Normally, there are 9 options (0x8 is the highest)
+  cmpwi r4, 8;  bne- notTheCStick			# If the setting 8, it is the C-Stick
   addi r30, r30, 0x1						# Add one option for C-Stick (Smash)
 
-loc_0x2E4:
-  cmpwi r4, 0xB;  bne- loc_0x2F0			# If this is Tap Jump
-  li r30, 0x1								# There are 2 settings (0, 1)!
+notTheCStick:
+  cmpwi r4, 11;  bne- notTheTap			# If this is Tap Jump
+  li r30, 1								# There are 2 settings (0, 1)!
+notTheTap:
 
-loc_0x2F0:
-  stb r30, 102(r5)
-  lhz r4, 100(r5);  andi. r4, r4, 0xFEFF;  sth r4, 100(r5)		# Filter out Start
-  lhz r4, 0(r26);  andi. r4, r4, 0xFEFF;  sth r4, 0(r26)		# Filter out Start
+  stb r30, 0x66(r5)
+  %playSFX(SFX_Enter3)
+  b suppressInput
 
-loc_0x30C:
-  b loc_0x3C4
+#################################
+# PAGE 3: Custom Command Settings
+#################################
 
-loc_0x310:
-  cmpwi r4, 0x3;  bne- loc_0x3C4
-  lhz r4, 0(r26);  andi. r4, r4, 0x300							# FILTER FOR ONLY A AND B
-  cmpwi r4, 0x0;  beq- loc_0x3C4								# NOTHING
-  cmpwi r4, 0x100;  bne- loc_0x394								# A BUTTON
-  
-  # By process of elimination, this is for pressing B
-  
-  lbz r4, 97(r5);  mulli r4, r4, 0x2;  addi r4, r4, 0x6E
-  lhzx r4, r5, r4;  mulli r4, r4, 0x124;  addi r4, r4, 0x14
-  lbz r30, 99(r5);  add r30, r30, r4
-  lbz r6, 71(r5);  cmpwi r6, 0x5;  blt- loc_0x360
-  addi r6, r6, 0x5
+CheckPage3: 
+  cmpwi r4, 0x3;  bne- normalInputs				# Not valid if it isn't page 3!
+  lwz r4, 0xC(r28);  andi. r30, r4, 0x200; bne- BPressP3		# B BUTTON
+					 andi. r30, r4, 0x100; beq+ normalInputs	# A BUTTON
+   
+  # By process of elimination, this is for pressing A
+APressP3:  
+  lbz r4, 0x61(r5);  mulli r4, r4, 0x2;  addi r4, r4, 0x6E
+  lhzx r4, r5, r4;  mulli r4, r4, TagSize;  addi r4, r4, 0x14		# Tags are separated by this much.
+  lbz r30, 0x63(r5);  add r30, r30, r4
+  lwz r6, 0x44(r5);  cmpwi r6, 5;  blt- loc_0x360				# Check if less than option 5????
+  addi r6, r6, 5												# Add 5 for A, B, C-Stick, Y, X and Tap Jump?
 
 loc_0x360:
-  cmpwi r6, 0xE;  bne- loc_0x36C		# 
-  li r6, 0x5							# 
+  cmpwi r6, 14;  bne- notSmash			# option (SMASH) 9 + 5 = 14. Exclusive to C-stick.
+  li r6, 5								# SMASH
 
-loc_0x36C:
-  cmpwi r6, 0xD;  bne- loc_0x378		# 
-  li r6, 0xE							# NONE
+notSmash:
+  cmpwi r6, 13;  bne- notNone			# option (NONE) 8 + 5 = 13.
+  li r6, 14								# NONE
 
-loc_0x378:
-  lbz r4, 111(r5);  cmpwi r4, 0x1;  bne- loc_0x388
-  rlwinm r6, r6, 7, 24, 24
+notNone:
+  lwz r4, 0x6C(r5);  cmpwi r4, 0x1;  bne- notTapJump	# Check if the highest "tag" is 1. If it is, this is actually Tap Jump (2 options: 0, 1)
+  rlwinm r6, r6, 7, 24, 24				# Convert setting into 0x80 bitflag for tap jump!
 
-loc_0x388:
-  lis r4, 0x9017;  ori r4, r4, 0x2E20;  stbx r6, r4, r30
+notTapJump:
+	lis r4, 0x9017;  ori r4, r4, 0x2E20;  stbx r6, r4, r30		# Store control settings!
+	%playSFX(SFX_SelectOption)
+	b gotoPage2
+	
+BPressP3:
+	%playSFX(SFX_Exit3)  
+gotoPage2:
+	mr r5, r26
+	li r4, 2;  stb r4, 0x60(r5)			# Go back to page 2 from page 3!
+	lbz r4, 0x63(r5);  stb r4, 0x67(r5)
+	li r4, 11;  stb r4, 0x66(r5)		# 11 input types for GC!
 
-loc_0x394:
-  li r4, 0x2;  stb r4, 96(r5)
-  lbz r4, 99(r5);  stb r4, 103(r5)
-  li r4, 0xB;  stb r4, 102(r5)
-  lhz r4, 100(r5);  andi. r4, r4, 0xFCFF;  sth r4, 100(r5)
-  lhz r4, 0(r26);  andi. r4, r4, 0xFCFF;  sth r4, 0(r26)
+	b suppressInput
+  
+#########################
+# PAGE 1: Normal Page
+#########################	
+TagPage:	# Taken from loc_0x14C
 
-loc_0x3C4:
-  addi r31, r31, 0x4
-  addi r26, r26, 0x40
-  cmpwi r31, 0x10
-  blt+ loc_0x10
+		lwz r30, 0x44(r5)
+		lwz r31, 0x6C(r5)
+		cmpwi r30, 0; ble- normalInputs		# \ Don't allow any behaviors if not on an actual tag!
+		cmpw r30, r31; bgt- normalInputs	# /
 
-loc_0x3D4:
-  # lis r30, 0x935C;  ori r30, r30, 0xE300		# POINTER TO 935CE300		# Sets ports 1-4
-  	lis r30, 0x806A 		# \
-	lwz r30, -0x180(r30)	# | POINTER to DataRefTable
-	addi r30, r30, 0x20		# /
-  li r5, 0x0
-  stw r5, 0(r30)		# \ 
-  stw r5, 4(r30)		# | Reset all 4 ports 
-  stw r5, 8(r30)		# |
-  stw r5, 12(r30)		# /
+		lbz r31, 0x57(r5)		# 
+		subi r31, r31, 0x31		# Get player slot
+		lwz r30, 0x44(r5)		# Tag index offset
+		add r30, r30, r30		# Multiply by 2
+		addi r30, r30, 0x6C		# Tags start at 0x6C
+		lwzx r30, r5, r30		# Get the tag we're modifying
+
+	
+	lwz r4, 0xC(r28)		# Get the current input
+ 
+	andi. r30, r4, 0x1000;  beq- noStartPressP1			# START BUTTON
+###
+# Start: Tag pin
+###
+StartPressP1: 	# Holds true for all examples of pressing Start
+	lwz r6, 0x44(r5);  mulli r6, r6, 0x2;  addi r6, r6, 0x6E	# Convert the tag
+	lhzx r6, r5, r6;  mulli r6, r6, TagSize		# Index of current tag. How much each tag is separated by.
+	lhz r3, 0x70(r5);  mulli r3, r3, TagSize	# The index and location of the first tag. How much each tag is separated by.
+	lis r4, 0x9017;  ori r4, r4, 0x2E30			# POINTER TO 90172E30. Location of tags but offset by 0x10
+	lwzx r3, r4, r3;  subi r3, r3, 0x1;  stwx r3, r4, r6	# Set new tag where first one is?
+	%playSFX(SFX_PinTag)
+	b suppressInput	# TODO: Force refresh of tag display.
+	
+noStartPressP1:	
+	andi. r30, r4, 0x810;  beq- normalInputs	# Y OR Z BUTTONS PRESSED. If neither are, act normally!
+	lis r6, 0x806A 		# \
+	lwz r6, -0x180(r6)	# | POINTER to DataRefTable
+	addi r6, r6, 0x1C	# /
+	# rlwinm r3, r31, 30, 0, 31;  
+	stbx r30, r6, r31							# 0 if entering custom controls
+
+  andi. r30, r4, 0x0010;  beq- noZPressP1			# Z BUTTON
+###
+# Z: Tag rewrite
+### 
+	li r4, 0x0;  stb r4, 0x60(r5)				# Set to page 0 (Tag write)
+
+noZPressP1:
+  andi. r30, r4, 0x0800; beq- noYPressP1			# Y BUTTON
+###
+# Y: Tag reconfigure
+### 
+	li r4, 0x2;  stb r4, 0x60(r5)				# Set to page 2 (Custom Control Page)
+	lwz r4, 0x44(r5);  stb r4, 0x61(r5)
+	lwz r4, 0x6C(r5);  stb r4, 0x62(r5)
+	li r4, 0;  stb r4, 0x67(r5)					# Set to top of list
+	li r4, 11;  stb r4, 0x66(r5)				# Set there to be 11 options (Tap is 0xB)
+	%playSFX(SFX_Enter2)
+
+noYPressP1:  
+  
 skipInit:
-  lis r26, 0x805B;  ori r26, r26, 0xAD00
-  lwz r0, 68(r1)
-}
+  
+  
+###  
+suppressInput:
+  li r31, 0x0;  stw r31, 0xC(r28)	# Suppress controller inputs
+  b finishCustomControls
+  
+  
+  
+finishCustomControls: 
+normalInputs:
 
+
+loc_0x30:
+  lmw r3, 8(r1);  addi r1, r1, 0x84
+  lwz r0, -8(r1);  mtctr r0
+  lwz r0, 4(r1);  mtlr r0
+  lwz r0, -4(r1);  stwu r1, -64(r1)
+}
 
 HOOK @ $8069F684
 {
@@ -420,9 +419,9 @@ HOOK @ $8069F684
 loc_0x58:
   lis r3, 0x3A20;  stw r3, 0(r30)		# ": "
   addi r30, r30, 0x2					# move over two characters
-  lbz r3, 97(r6);  mulli r3, r3, 0x2;  addi r3, r3, 0x6E
+  lbz r3, 0x61(r6);  mulli r3, r3, 0x2;  addi r3, r3, 0x6E
   lhzx r3, r6, r3						# Get tag ID of current slot
-  mulli r3, r3, 0x124					# Amount each tag is separated by. r3 was the tag index offset.
+  mulli r3, r3, TagSize					# Amount each tag is separated by. r3 was the tag index offset.
   lis r4, 0x9017;  ori r4, r4, 0x2E20	# POINTER TO 90172E20	# Tags in save file. 
   add r3, r3, r4							# Each tag block is separated by 0x124
   addi r3, r3, 0x14							# Beginning of input block
@@ -447,11 +446,11 @@ loc_0xC4:								# MOVE IT OVER
   addi r29, r4, 0x0
 
 loc_0xC8:
-  lbz r3, 111(r6);  cmpwi r3, 0x1;  bne- loc_0xD8		# if the entry count is 1 (technically 2), then use indexes 10 and 11
+  lwz r3, 0x6C(r6);  cmpwi r3, 0x1;  bne- loc_0xD8		# if the entry count is 1 (technically 2), then use indexes 10 and 11
   addi r29, r29, 10					# TAP JUMP OFF, ON are 10 and 11
 
 loc_0xD8:
-  lbz r4, 96(r6);  cmpwi r4, 0x2;  bne- loc_0x138				# S TAUNT, D TAUNT, NONE, SMASH, OFF, ON
+  lbz r4, 0x60(r6);  cmpwi r4, 0x2;  bne- loc_0x138				# S TAUNT, D TAUNT, NONE, SMASH, OFF, ON
   cmpwi r28, 0x8;  bne- loc_0x138		# Branch if not the C-Stick
   cmpwi r29, 0x5;  bne- loc_0x10C
   li r29, 12			# TAUNT (5)
@@ -468,7 +467,7 @@ loc_0x124:
 
 loc_0x138:
   cmpwi r4, 0x3;  bne- loc_0x190
-  lbz r28, 99(r6);  cmpwi r28, 0x8;  bne- loc_0x190				# SKIP THESE IF NOT THE C-STICK
+  lbz r28, 0x63(r6);  cmpwi r28, 0x8;  bne- loc_0x190				# SKIP THESE IF NOT THE C-STICK
 					cmpwi r29, 0x5;  bne- loc_0x164
   li r29, 12		# TAUNT
   b loc_0x190
@@ -483,19 +482,6 @@ loc_0x17C:
   li r29, 14		# TILT
 
 loc_0x190:
-/*
-  mulli r29, r29, 0x8				# OFFSET TO EACH OPTION RELATIVE TO 935CE56C (NONE is 8th regardless)
-  add r3, r3, r29
-  lbz r4, 0(r3);  stb r4, 0(r30)
-  cmpwi r4, 0x0
-  beq- loc_0x1B8
-
-loc_0x1A8:
-  lbzu r4, 1(r3);  stbu r4, 1(r30)
-  cmpwi r4, 0x0
-  bne+ loc_0x1A8					# WRITE STRING UNTIL NULL TERMINATOR IS FOUND
-*/
-
   	lis r3, 0x806A; lwz r3, -0x180(r3); lwz r3, 0(r3)		# Misc Data 140  
 	mr r4, r29			# Message ID
 	addi r5, r1, 0x48	# Where to write length
@@ -510,7 +496,6 @@ loc_0x1A8:
 	
 loc_0x1B8:
   mr r3, r31
-  # mr r7, r18
   lwz r31, 124(r1)
   lwz r30, 120(r1)
   lwz r29, 116(r1)
@@ -527,21 +512,21 @@ loc_0x1DC:
 
 HOOK @ $806A0154
 {
-  lbz r4, 102(r26);  cmpwi r4, 0x0;  beq- loc_0x10
-  stw r4, 108(r26)
+  lbz r4, 0x66(r26);  cmpwi r4, 0x0;  beq- loc_0x10
+  stw r4, 0x6C(r26)
 
 loc_0x10:
-  lbz r4, 103(r26);  cmpwi r4, 0xF0;  beq- loc_0x20
-  stw r4, 68(r26)
+  lbz r4, 0x67(r26);  cmpwi r4, 0xF0;  beq- loc_0x20
+  stw r4, 0x44(r26)
 
 loc_0x20:
-  li r4, 0xF0;  sth r4, 102(r26)
-  lwz r4, 68(r26)
+  li r4, 0xF0;  sth r4, 0x66(r26)
+  lwz r4, 0x44(r26)
 }
 
 HOOK @ $8068A0F4
 {
-  lbz r28, 604(r23);  cmpwi r28, 0x0;  bne- loc_0x2C
+  lbz r28, 0x25C(r23);  cmpwi r28, 0x0;  bne- loc_0x2C	# 1FC + 60
   mfctr r28
   lis r3, 0x806A;  ori r3, r3, 0x714		# POINTER TO 806A0714	#### close/[MuSelctChrList]
   mtctr r3;  addi r3, r23, 0x1FC;  bctrl 
@@ -554,7 +539,7 @@ loc_0x2C:
 HOOK @ $8069B868
 {
   li r19, 0x1
-  stb r19, 604(r29)
+  stb r19, 0x25C(r29) # 1FC + 60
   mr r19, r3
 }
 ###
@@ -562,14 +547,20 @@ HOOK @ $8069B868
 ###
 HOOK @ $8069B87C
 {
-  lbz r3, 604(r29);  cmpwi r3, 0x0;  bne- loc_0x70
-  lbz r19, 579(r29);  mulli r19, r19, 0x2;  addi r19, r19, 0x26A;  lhzx r19, r29, r19
-  lis r5, 0x8000;  lwz r5, 10240(r5);  cmpwi r5, 0x1;  bne- loc_0x3C
-  lis r5, 0x805A;  lwz r5, 224(r5);  lwz r5, 28(r5);  stb r19, 40(r5)
+  # lbz r3, 0x25C(r29);  cmpwi r3, 0x0;  bne- loc_0x70	# 1FC + 60. Skip most of this if not in page 0 of the tag menu. . . . . actually not needed.
+  lwz r12, 0x240(r29);  			# Tag index
+  cmpwi r12, 1; blt+ loc_0x70		# This is the first tag entry box (-1), lacking a tag (0) or invalid, not an actual tag!
+  lwz r11, 0x268(r29)	# 1FC + 6C. Amount of tags.
+  cmpw r12, r11; bgt+ loc_0x70		# This is the last tag entry box (Amount of tags + 1) or invalid, not an actual tag!
+  
+  mulli r19, r12, 0x2;  addi r19, r19, 0x26A;  lhzx r19, r29, r19	# 1FC + 44. Tag index
+  
+  lis r5, 0x8000;  lwz r5, 0x2800(r5);  cmpwi r5, 0x1;  bne- loc_0x3C		# Check if in custom controls menu done by Chase
+  lis r5, 0x805A;  lwz r5, 0xE0(r5);  lwz r5, 0x1C(r5);  stb r19, 0x28(r5)
 
 loc_0x3C:
-  mulli r3, r19, 0x124			 # Tags are separated by this amount
-  lis r4, 0x9017;  ori r4, r4, 0x2E30		# POINTER TO 90172E30
+  mulli r3, r19, TagSize					# Tags are separated by this amount
+  lis r4, 0x9017;  ori r4, r4, 0x2E30		# POINTER TO 90172E30, first tag + 0x10
   add r4, r4, r3
   lis r3, 0x806A; lwz r3, -0x180(r3); stw r4, 0x18(r3)
   # lis r3, 0x935C;  ori r3, r3, 0xE3D8;  stw r4, 0(r3)	# POINTER TO 935CE3D8
@@ -579,48 +570,53 @@ loc_0x3C:
   li r4, 0x1;  stb r4, 613(r29)
 
 loc_0x70:
-  li r3, 0x0;  stb r3, 604(r29)
-  mr r3, r20
+  li r3, 0x0;  stb r3, 0x25C(r29)	# Force to be on custom page 0 of the tag menu
+  mr r3, r20						# Original operation
 }
 ###
-# Tag name creation using Z
+# When backing out of tag renaming custom behavior, try to go to the tag we just modified.
 ###
 HOOK @ $8069B9F8
 {
   lis r3, 0x8067;  ori r3, r3, 0x4B64;  mtctr r3;  addi r3, r29, 0x370;  bctrl 	# close/[MuSelctChrNameEntry]
-  # lis r3, 0x935C;  ori r3, r3, 0xE3D0				# POINTER TO 935CE3D0
+
  	lis r3, 0x806A 		# \
 	lwz r3, -0x180(r3)	# | POINTER to DataRefTable
 	addi r3, r3, 0x1C	# /
-  li r11, 0xFF;  stbx r11, r3, r30				# set to -1 the port
-  lbz r3, 604(r29);  cmpwi r3, 0x0;  bne- loc_0x98
-  # lis r3, 0x935D;  lwz r3, -7212(r3)				# POINTER TO 935CE3D4
-  # lis r11, 0x935D;  lwz r11, -7208(r11)				# POINTER TO 935CE3D8
+	
+	lbz r12, 0x253(r29)	 # 0x57 + 0x1FC 
+	subi r12, r12, 0x31	 # Port slot
+	li r11, 0xFF;  stbx r11, r3, r12				# set to -1 the port. Fixed relative to previous version that would always receive 0.
   
+  lbz r3, 0x25C(r29);  cmpwi r3, 0x0;  bne- loc_0x98	# 1FC + 60. Check if it is page 0 (Custom tag edit). If it isn't, it is a new tag.
+ 
   lis r3, 0x806A; lwz r3, -0x180(r3)
   
-  lwz r11, 0x18(r3)
-  lwz r3, 0x14(r3)		# Data Pointer  
-  cmpwi r11, 0	# TODO: figure out cause. Prevent break. 
-  beq- loc_0x98	# Result is backing out to the CSS instead of the tag selected.
+  lwz r11, 0x18(r3)		# Data Pointer
+  lwz r3, 0x14(r3)		# Start of tag character array  
+  cmpwi r11, 0	#
+  beq- loc_0x98	# Result is backing out to the CSS if the pointer is invalid!
   
   stw r3, 0(r11)
-  li r3, 0x1;  stb r3, 612(r29)
-  lis r3, 0x8069;  ori r3, r3, 0xF240;  mtctr r3
-  addi r3, r29, 0x1FC
-  li r4, 0x0
-  lwz r5, 68(r3)
-  lwz r11, 108(r3);  cmpwi r5, 0x0;  bge- loc_0x78
-  lbz r5, 111(r3);  b loc_0x94
+  li r3, 0x1;  stb r3, 0x264(r29)	# 1FC + 68
+  lis r3, 0x8069;  ori r3, r3, 0xF240;  mtctr r3	# Prepare to open the tag menu after closing the tag creation menu
+  addi r3, r29, 0x1FC	# Pointer needed for various things
+  li r4, 0x0			# Needed to initialize opening the tag menu 
+  lwz r5, 0x44(r3)		# Current tag index
+  lwz r11, 0x6C(r3)		# Amount of tags
+  
+  cmpwi r5, 0x0;  bge- loc_0x78		# Check if this tag index was valid!
+  lwz r5, 0x6C(r3);  b loc_0x94		# Set to the highest tag instead if it wasn't.
 
 loc_0x78:
-  cmpw r5, r11;  ble- loc_0x88
-  lbz r5, 111(r3)
+  cmpw r5, r11;  ble- loc_0x88		# Is the tag index somehow higher than the amount of tags available?
+  lwz r5, 0x6C(r3)					# Set to the highest tag instead if that's the case.
   b loc_0x94
 
 loc_0x88:
-  mulli r5, r5, 0x2;  addi r5, r5, 0x6E
-  lhzx r5, r3, r5		# Get tag index
+  mulli r5, r5, 0x2 	# \
+  addi r5, r5, 0x6E		# | Get tag index
+  lhzx r5, r3, r5		# /
 loc_0x94:
   bctrl 			# open/[MuSelctChrList]
 
@@ -709,47 +705,19 @@ HOOK @ $806828C8
 	mflr r0 # Original operation
 
 }
-HOOK @ $8069FECC
-{
-  lbz r4, 96(r3);  cmpwi r4, 0x1;  bgt- loc_0x40
-  andi. r14, r6, 0x400;  cmpwi r14, 0x400;  bne- loc_0x40		# X BUTTON
-  lwz r14, 68(r3);  cmpwi r14, 0x0;  bne- loc_0x40
-  lbz r14, 87(r3);  subi r14, r14, 0x31
-  lis r4, 0x9017;  ori r4, r4, 0xBE60	# POINTER TO 9017BE60
-  lbzux r14, r4, r14;  xori r14, r14, 1;  stb r14, 0(r4)
-
-loc_0x40:
-  rlwinm. r4, r0, 0, 23, 23
-}
 HOOK @ $806A0714
 {
-  lis r4, 0x100;  stw r4, 96(r3)
-  lbz r4, 87(r3)
+  lis r4, 0x100;  stw r4, 0x60(r3)
+  lbz r4, 0x57(r3)
   # lis r5, 0x935C;  ori r5, r5, 0xE3CF	# POINTER TO 935CE3CF
   	lis r5, 0x806A 		# \
 	lwz r5, -0x180(r5)	# | POINTER to DataRefTable
 	addi r5, r5, 0x1B	# / 1C - 1 since D0 - 1
   andi. r4, r4, 0xF
   li r6, 0xFF;  stbx r6, r5, r4
-  stwu r1, -16(r1)
+  stwu r1, -0x10(r1)	# Original operation
 }
-HOOK @ $8069FE88
-{
-  stw r0, -4(r1);  mflr r0
-  stw r0, 4(r1);  mfctr r0
-  stw r0, -8(r1);
 
-  stwu r1, -132(r1)
-  stmw r3, 8(r1)
-  lbz r31, 96(r3);  cmpwi r31, 0x2;  blt- loc_0x30
-  li r31, 0x0;  stw r31, 12(r4)
-
-loc_0x30:
-  lmw r3, 8(r1);  addi r1, r1, 0x84
-  lwz r0, -8(r1);  mtctr r0
-  lwz r0, 4(r1);  mtlr r0
-  lwz r0, -4(r1);  stwu r1, -64(r1)
-}
 
 
 # TAG FORMAT
