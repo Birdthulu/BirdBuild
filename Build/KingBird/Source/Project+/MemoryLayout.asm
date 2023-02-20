@@ -44,9 +44,9 @@ int 0X6F1CA0 @ $80422384  #+0.58MB version. Keep this size synchronized with the
 int 0x119B00 @ $804218AC
 
 #############################################
-Sound Resource 12.76MB -> 10.92MB [DukeItOut]
+Sound Resource 12.76MB -> 10.93MB [DukeItOut]
 #
-# Space used: 12.06MB (94%) -> 10.92MB (100%)
+# Space used: 12.06MB (94%) -> 10.93MB (99%)
 #############################################
 .alias size = 0x28000    # Normally E6000
 .alias size_hi = size / 0x10000
@@ -59,7 +59,7 @@ CODE @ $8007326C
     ori r4, r31, size_lo
 }
 op ori r8, r31, size_lo @ $800732A4
-int 0xAECB40 @ $804217B4    # Normally 0xCC7C00
+int 0xAEF000 @ $804217B4    # Normally 0xCC7C00
 op li r31, 4 @ $801C8B8C    # \ Reduced from 8 music buffers to 4. (2 stereo tracks to allow music switches)
 op li r31, 4 @ $801C8BC4    # /
 HOOK @ $801C32C4

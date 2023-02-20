@@ -2165,33 +2165,38 @@ Menu Scroll Speeds Modifier [Magus]
 ########################################
 Name Scroll Transition Modifier [Magus]
 ########################################
-float[2] 0.5, 3.5 @ $806A1ED8
-float[2] 5.5, 8.5 @ $806A1EEC
+float[2] 0.5, 3.5 @ $806A1ED8	# Related to upwards scrolling animation pauses
+float[2] 5.5, 8.5 @ $806A1EEC	# Related to downwards scrolling animation pauses (+5.0)
 
 ##################################################################
-Faster Name Scrolling with Shoulder Buttons v1.1 [wiiztec, Magus]
+Faster Name Scrolling with Shoulder Buttons v1.2 [wiiztec, Magus]
+#
+# 1.2: Modified to account for the custom control menu revamp
 ##################################################################
 HOOK @ $806A021C
 {
-  	rlwinm. r8, r23, 0, 25, 26;	bne- loc_0x10
- 	rlwinm. r8, r23, 0, 13, 13;  	beq+ loc_0x20
-loc_0x10:
+	lbz r8, 0x60(r26); cmpwi r8, 1; bne+ Normal
+  	rlwinm. r8, r23, 0, 25, 26;	bne- Fast	# L/R on a GC/CC
+ 	rlwinm. r8, r23, 0, 13, 13;  	beq+ Normal	# C on a Nunchuk
+Fast:
+	
   	subi r5, r5, 0x4
-  	cmpwi r5, 0xFFFF;	bge+ loc_0x20
+  	cmpwi r5, 0xFFFF;	bge+ Normal
   	li r5, 0xFFFF
-loc_0x20:
-  	stw r5, 68(r26)	
+Normal:
+  	stw r5, 0x44(r26)	# Original operation
 }
 HOOK @ $806A039C
 {
-  	rlwinm. r8, r23, 0, 25, 26;  bne- loc_0x10
-  	rlwinm. r8, r23, 0, 13, 13;  beq+ loc_0x20
-loc_0x10:
+	lbz r8, 0x60(r26); cmpwi r8, 1; bne+ Normal
+  	rlwinm. r8, r23, 0, 25, 26;  bne- Fast		# L/R on a GC/CC
+  	rlwinm. r8, r23, 0, 13, 13;  beq+ Normal	# C on a Nunchuk
+Fast:
   	addi r5, r5, 0x4
-  	cmpw r5, r29; 		blt+ loc_0x20
+  	cmpw r5, r29; 		blt+ Normal
   	subi r5, r29, 0x1
-loc_0x20:
-  	stw r5, 68(r26)
+Normal:
+  	stw r5, 0x44(r26)	# Original operation
 }
 
 ##############################

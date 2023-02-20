@@ -91,15 +91,17 @@ Finished:
 .macro CheckStopped()
 {
 	lwz r4, 0x1C(r3)
+	xoris r4, r4, 0x8000	# Flip negative bit
 	cmpwi r4, 0		# is it a speed of 0.0?
-	bne+ Play		# If not, a normal animation!
-	lis r4, 0x805B
-	lwz r4, 0x50AC(r4)
-	lwz r4, 0x10(r4)
-	lwz r4, 0x08(r4)
-	cmpwi r4, 10; beq+ %END%	# Multiplayer
-	cmpwi r4,  8; beq+ %END%	# Single-Player
-	cmpwi r4,  6; beq+ %END%	# Replays
+	beq- %END%		# Remove this line if animation issues necessitate the below
+	# bne+ Play		# If not, a normal animation!
+	# lis r4, 0x805B			# Not needed for right now but might be in the future
+	# lwz r4, 0x50AC(r4)		# as an exception if things fail to work as anticipated
+	# lwz r4, 0x10(r4)
+	# lwz r4, 0x08(r4)
+	# cmpwi r4, 10; beq+ %END%	# Multiplayer
+	# cmpwi r4,  8; beq+ %END%	# Single-Player
+	# cmpwi r4,  6; beq+ %END%	# Replays
 Play:	
 	bctrl
 }
@@ -150,7 +152,8 @@ proceed:
 	cmpwi r3, 0 
 	beq- noAnim				# Skip if no animation present!
 	lwz r8, 0x00(r3)		# List of functions to access as an animation.
-	fsub f1, f1, f1			# Easy 0.0
+	fsub f1, f1, f1			# Easy -0.0. The negative is to make it implausible be accidental
+	fneg f1, f1				# 
 	lwz r12, 0x28(r8)
 	mtctr r12
 	bctrl					# Set animation speed!
