@@ -54,6 +54,16 @@ op NOP @ $808275B4
 byte 0x4C @ $8081DF63	# Used by Bowser
 byte 0x6C @ $8081DF87	# Used by Giga Bowser!
 word 0 @ $80AD8028
+HOOK @ $80828F08		# Force Bowser and Giga Bowser to load their costume normally.
+{
+	cmplwi r0, 0x100	# Original operation
+	beq- %END%
+	lwz r0, 0x8(r22)	# Get character instance ID
+	cmpwi r0, 0xB		# \ Check if Bowser
+	beq- %END%			# /
+	cmpwi r0, 0x30		# \ Check if Giga Bowser
+	beq- %END%			# /
+}
 
 ###############################################################
 Only New Characters Need a Spy Costume Added [DukeItOut]

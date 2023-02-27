@@ -354,6 +354,9 @@ loc_0x34:
 }
 HOOK @ $801C7AB4
 {
+  lwz r0, 0xC(r3)	# Original operation
+  cmplwi r29, CustomSoundbankRange;  blt- %END%
+
   lwz r28, 0x10(r1)
   lwz r28, 0x1C(r28)
   lwz r28, 0x94(r28)
@@ -362,8 +365,6 @@ HOOK @ $801C7AB4
   mulli r12, r12, 0x8		# Index for this hook and the one below
   add r12, r28, r12
   
-  lwz r0, 0xC(r3)	# Original operation
-  cmplwi r29, CustomSoundbankRange;  blt- %END%
   li r0, 0	# Pointer to voices within bank (Start of it). Without this, it could get invalid values before.
   cmplwi r30, 0;  beq- %END% 	# Use below to get index for SFX
 

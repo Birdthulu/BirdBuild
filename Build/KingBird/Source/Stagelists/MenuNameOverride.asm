@@ -14,7 +14,7 @@ string "stageslot/"                     @ $80550B18 # This address might change 
 string "stageinfo/"                     @ $80550B28 # This address might change and crash
 * E0000000 80008000
 * 24523400 00000001 # If 80523400 is greater than 1
-string "menu2/db_menumain.pac"         @ $806FB248
+string "menu2/db_menumain.pac"          @ $806FB248
 string "db_menumain_en.pac"             @ $817F62BC
 string "/menu2/db_selcharacter.pac"     @ $806FF2EC
 string "db_selcharacter_en.pac"         @ $817F6365
