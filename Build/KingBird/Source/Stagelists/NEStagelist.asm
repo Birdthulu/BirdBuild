@@ -17,18 +17,16 @@ NE Stagelist [Bird]
 .GOTO->SkipStageTables
 
 TABLE_1:
-	byte[10] |
-0x3C, | # Poke Floats
+	byte[9] |
 0x0C, | # Yoshi's Island
+0x08, | # Pirate Ship
+0x23, | # Dream Land
+0x01, | # Final Destination
+0x17, | # Raisin Ruins
 0x1A, | # Smashville
-0x0A, | # Metroid Lab
-0x12, | # Subspace Plains
-0x2B, | # Training Room
-0x17, | # Bridge of Eldin
 0x00, | # Battlefield
 0x28, | # Pokemon Stadium 2
-0x01  | # Final Destination
-
+0x05  | # Luigi's Mansion 2
 
 TABLE_2:
 	byte[27] |
@@ -40,18 +38,18 @@ TABLE_2:
 0x26, | # Big Blue
 0x0E, | # Lylat Cruise
 0x0F, | # Saffron City
-0x08, | # Pirate Ship
 0x25, | # Corneria
 0x27, | # Planet Zebes
-0x23, | # Dream Land
 0x15, | # Wario Land
 0x04, | # Metal Cavern
+0x0A, | # Metroid Lab
+0x12, | # Subspace Plains
 0x1C, | # Green Hill Zone
 0x02, | # Delfino's Secret
 0x18, | # Fountain of Dreams
-0x05, | # Molgera's Lair
 0x2E, | # Clock Town
 0x1F, | # Temple
+0x2B, | # Training Room
 0x10, | # Spear Pillar
 0x34, | # Bell Tower
 0x0D, | # Halberd
@@ -61,7 +59,7 @@ TABLE_2:
 0x20  | # Yoshi's Story
 
 TABLE_3:
-	byte[22] |
+	byte[23] |
 0x31, | # Dinosaur Land
 0x2D, | # Mario Circuit
 0x38, | # Mushroom Kingdom
@@ -69,6 +67,7 @@ TABLE_3:
 0x32, | # Oil Drum Alley
 0x33, | # Jungle Japes
 0x36, | # Cookie Country
+0x3C, | # Poke Floats
 0x39, | # WarioWare, Inc.
 0x13, | # Flat Zone 2
 0x03, | # Luigi's Mansion
@@ -113,9 +112,9 @@ half[61] |	# Stage Count + 2
 SkipStageTables:
 .RESET
 * 20523400 00000004 # If 80523400 is 4
-byte 10 @ $806B929C # Page 1
+byte 9 @ $806B929C # Page 1
 byte 27 @ $806B92A4 # Page 2
-byte 22 @ $80496002 # Page 3
+byte 23 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
 byte 59 @ $800AF673 # Stage Count

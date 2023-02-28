@@ -22,7 +22,7 @@ TABLE_1:
 0x12, | # Subspace Plains (Dubs Only)
 0x23, | # Dream Land
 0x0C, | # Yoshi's Island
-0x17, | # Bridge of Eldin (Singles Only)
+0x17, | # Raisin Ruins (Singles Only)
 0x08, | # Pirate Ship
 0x1A, | # Smashville
 0x00, | # Battlefield
@@ -54,7 +54,7 @@ TABLE_2:
 0x04, | # Metal Cavern
 0x15, | # Wario Land (Singles Only)
 0x20, | # Yoshi's Story
-0x0F, | # Duskull
+0x0F, | # Saffron City
 0x0A  | # Metroid Lab
 
 TABLE_3:

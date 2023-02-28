@@ -12,7 +12,7 @@
 0D - Yoshi's Island
 0E - Halberd
 13 - Lylat Cruise
-14 - Duskull Peak
+14 - Saffron City
 15 - Spear Pillar
 16 - Port Town
 17 - Subspace Plains
@@ -20,7 +20,7 @@
 19 - Castle Siege
 1C - Wario Land
 1D - Distant Planet
-1E - Bridge of Eldin
+1E - Raisin Ruins
 1F - Fountain of Dreams
 20 - Fourside
 21 - Smashville

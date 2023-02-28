@@ -310,8 +310,8 @@ Default Settings Modifier [Igglyboo, Brkirch, and FMK]
 * 0417F368 08010101
 * 0417F36C 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04801401 # Brawl stages
-* 0417BE70 00020000 # Melee stages
+* 0417BE74 04801121 # Brawl stages
+* 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
 ############################################################################
@@ -370,7 +370,7 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs) [Bird]
 * 04523330 00000000
 * 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04041123 # Brawl stages
+* 0417BE74 04040123 # Brawl stages
 * 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
@@ -385,8 +385,8 @@ Set random stagelist based on Code Menu Stagelist setting (NE) [Bird]
 * 04523330 00000000
 * 04523340 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04801401 # Brawl stages
-* 0417BE70 00020000 # Melee stages
+* 0417BE74 04801121 # Brawl stages
+* 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
 ###################################

@@ -12,7 +12,7 @@
 0D - Yoshi's Island
 0E - Halberd
 13 - Lylat Cruise
-14 - Duskull Peak
+14 - Saffron City
 15 - Spear Pillar
 16 - Port Town
 17 - Subspace Plains
