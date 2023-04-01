@@ -6,7 +6,7 @@
 06 - Bowser's Castle
 07 - Kongo Jungle
 08 - Rumble Falls
-09 - Pirate Ship
+09 - Temple of Time
 0B - Norfair
 0C - Frigate Orpheon
 0D - Yoshi's Island
@@ -64,3 +64,4 @@
 4E - Subspace
 4F - Rainbow Cruise
 50 - Poke Floats
+51 - Pirate Ship

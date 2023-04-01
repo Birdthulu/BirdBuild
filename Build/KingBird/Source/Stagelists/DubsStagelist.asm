@@ -27,7 +27,7 @@ TABLE_1:
 0x1A, | # Smashville
 0x00, | # Battlefield
 0x28, | # Pokemon Stadium 2
-0x05  | # Luigi's Mansion 2
+0x03  | # Luigi's Mansion
 
 TABLE_2:
 	byte[25] |
@@ -39,7 +39,7 @@ TABLE_2:
 0x26, | # Big Blue
 0x0E, | # Lylat Cruise
 0x13, | # Flat Zone 2
-0x03, | # Luigi's Mansion
+0x05, | # Bowser's Castle
 0x07, | # Rumble Falls
 0x25, | # Corneria
 0x27, | # Planet Zebes
@@ -58,7 +58,7 @@ TABLE_2:
 0x0A  | # Metroid Lab
 
 TABLE_3:
-	byte[24] |
+	byte[25] |
 0x31, | # Dinosaur Land
 0x2D, | # Mario Circuit
 0x38, | # Mushroom Kingdom
@@ -66,6 +66,7 @@ TABLE_3:
 0x32, | # Oil Drum Alley
 0x33, | # Jungle Japes
 0x2E, | # Clock Town
+0x3D, | # Temple of Time
 0x36, | # Cookie Country
 0x39, | # WarioWare, Inc.
 0x3C, | # Poke Floats
@@ -89,7 +90,7 @@ TABLE_5:	# Unused
 
 TABLE_STAGES:
 # Table of icon<->stage slot associations
-half[61] |	# Stage Count + 2
+half[62] |	# Stage Count + 2
 | # OLD SLOTS
 0x0101, 0x0202, 0x0303, 0x0404, | # Battlefield, Final Destination, Delfino's Secret, Luigi's Mansion
 0x0505, 0x0606, 0x0707, 0x0808, | # Metal Cavern, Bowser's Castle, Kongo Jungle, Rumble Falls
@@ -107,15 +108,15 @@ half[61] |	# Stage Count + 2
 0x4427, 0x4528, 0x4629, 0x2B34, | # Dead Line, Dinosaur Land, Oil Drum Alley, Jungle Japes
 0x482B, 0x0B0B, 0x4A2D, 0x4B2E, | # Bell Tower, Norfair, Cookie Country, Venus Lighthouse
 0x4C2F, 0x4D30, 0x4E31, 0x4F3D, | # Mushroom Kingdom, WarioWare, Subspace, Rainbow Cruise
-0x503E				| # Poke Floats
+0x503E, 0x513F			  | # Poke Floats, Temple of Time
 
 SkipStageTables:
 .RESET
 * 24523400 00000001 # If 80523400 is greater than 1
 byte 10 @ $806B929C # Page 1
 byte 25 @ $806B92A4 # Page 2
-byte 24 @ $80496002 # Page 3
+byte 25 @ $80496002 # Page 3
 byte 00 @ $80496003 # Page 4 (Unused)
 byte 00 @ $80496004 # Page 5 (Unused)
-byte 59 @ $800AF673 # Stage Count
+byte 60 @ $800AF673 # Stage Count
 * E0000000 80008000
