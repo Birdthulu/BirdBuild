@@ -2,13 +2,6 @@
 :: Virtual SD card main script
 :: ============================================================================
 @echo off
-ROBOCOPY "%BUILD_DIR:\=\\%KingBird\pf\sound\tracklist" "%BUILD_DIR:\=\\%KingBird\pf\sound\netplaylist." ^
-    /E ^
-    /NS ^
-    /NP ^
-    /NJH ^
-    %PURGE_COMMAND%
-IF %ERRORLEVEL% GEQ 8 goto error
 cls
 
 cd /d %~dp0
@@ -34,6 +27,14 @@ if %PURGE%==1 (
 )
 
 call mount.bat || goto error
+
+ROBOCOPY "%BUILD_DIR:\=\\%KingBird\pf\sound\tracklist" "%BUILD_DIR:\=\\%KingBird\pf\sound\netplaylist." ^
+    /E ^
+    /NS ^
+    /NP ^
+    /NJH ^
+    %PURGE_COMMAND%
+IF %ERRORLEVEL% GEQ 8 goto error
 
 ROBOCOPY "%BUILD_DIR:\=\\%KingBird" "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird." ^
     /E ^
