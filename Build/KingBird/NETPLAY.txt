@@ -355,7 +355,7 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs Singles) [Bird]
 * 04523340 00000000
 * 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04801121 # Brawl stages
+* 0417BE74 04801109 # Brawl stages
 * 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
@@ -370,7 +370,7 @@ Set random stagelist based on Code Menu Stagelist setting (Dubs) [Bird]
 * 04523330 00000000
 * 04523350 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04040123 # Brawl stages
+* 0417BE74 0404010B # Brawl stages
 * 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
@@ -385,7 +385,7 @@ Set random stagelist based on Code Menu Stagelist setting (NE) [Bird]
 * 04523330 00000000
 * 04523340 00000000
 * 42000000 90000000 #Set base address to 90000000
-* 0417BE74 04801121 # Brawl stages
+* 0417BE74 04801109 # Brawl stages
 * 0417BE70 00021000 # Melee stages
 * E0000000 80008000
 
