@@ -1,0 +1,94 @@
+MENUS
+000 - Menu/Hit SFX
+0D5 - Misc Announcer Clips 1
+0D6 - Misc Announcer Clips 2
+0D7 - Misc Announcer Clips 3 (also where Knuckles' announcer call is)
+0D8 - Announcer Character Calls
+027 - Wii Remote Character Selection
+
+CHARACTERS
+001 - Mario
+002 - Link
+003 - Pit
+004 - Metaknight
+005 - Dedede
+006 - Donkey Kong
+007 - Samus/ZSS
+008 - Yoshi
+009 - Kirby
+010 - Peach
+011 - Sheik/Zelda
+012 - Ice Climbers
+013 - Marth
+014 - Mr. Game & Watch
+015 - Falco
+016 - Ganondorf
+017 - Wario
+018 - Olimar
+019 - Lucas
+020 - Ike
+021 - ROB
+022 - Jigglypuff
+023 - Toon Link
+024 - Wolf
+025 - Snake
+026 - Sonic
+029 - Kirby Copy Abilities
+047 - ZSS Moves (not voice clips)
+144 - Mewtwo
+145 - Roy
+146 - Knuckles
+00A - Fox
+00B - Pikachu
+00C - Luigi
+00D - Captain Falcon
+00E - Ness
+00F - Bowser
+01A - Diddy Kong
+01C - Charizard
+01D - Squirtle
+01E - Ivysaur
+01F - Lucario
+
+STAGES
+04C - Yoshi's Island
+04D - Delfino Plaza
+04E - Luigi's Mansion
+04F - Mushroom Kingdom Melee
+050 - Mario Circuit
+051 - Oil Drum Alley
+052 - Rumble Falls X
+053 - Pirate Ship
+054 - Bridge of Eldin
+055 - Crateria
+056 - Frigate Orpheon
+057 - Halberd
+058 - Lylat Cruise
+059 - Pokemon Stadium 2
+05A - Spear Pillar
+05B - Port Town
+05C - Infinite Glacier
+05D - Flat Zone
+05E - Castle Siege
+05F - Wario Ware
+060 - Distant Planet
+061 - Skyworld
+062 - Mario Bros
+063 - New Pork City
+064 - Smashville
+065 - Shadow Moses Island
+066 - Green Hill Zone
+067 - PictoChat
+068 - Hanenbow
+069 - Edit Stage
+06A - Jungle Japes
+06B - Planet Zebes
+06C - Dreamland
+06D - Corneria
+06E - Saffron City
+06F - Big Blue
+070 - Onett
+073 - Home Run Contest
+074 - Break the Targets
+075 - Credits
+13D - Frigate Orpheon Ridley Version
