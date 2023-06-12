@@ -149,29 +149,6 @@ customPage:
   mr r4, r28		# Restore r4
   mr r24, r7		# Original operation
 }
-# Alters rumble of slot
-HOOK @ $8069FECC
-{
-	lbz r4, 0x60(r3);  cmpwi r4, 0x1;  bgt- notTagPage
-	andi. r14, r6, 0x400;  beq+ noRumble		# X BUTTON
-	lwz r14, 0x44(r3);  cmpwi r14, 0x0;  bne- notTagPage	# Only activate for the player slot! 
-  
-	lbz r14, 0x57(r3);  subi r14, r14, 0x31	# Check for player slot
-	lis r4, 0x9017;  ori r4, r4, 0xBE60	# POINTER TO 9017BE60
-	lbzux r14, r4, r14;  xori r14, r14, 1;  stb r14, 0(r4)
-    cmpwi r14, 1; bne noTriggerRumble		# Only play rumble if it is act
-CauseRumbleEffect:	
-	%playRumble()
-noTriggerRumble:
-
-   
-	mr r3, r26		# Restore r3
-	lwz r0, 0xC(r28)	# Get back r0
-  
-noRumble:
-notTagPage:
-	rlwinm. r4, r0, 0, 23, 23	# Original operation
-}
 #Scrolls Through list
 HOOK @ $806A01D0
 {

@@ -5,158 +5,54 @@ CPU DI fix [Bero]
 CPUs Don't Ignore Other CPUs to Target Humans [Magus]
 * 04907D60 4800001C
 
-#################################
-nana throws without considering human input [Bero, v1.2 by Eon, dual-hook fix by fudgepop01]
-#################################
-HOOK @ $80903440
+Nana automatic throw enabler(auto throw routine 6100) [Bero, fix by Eon]
+HOOK @ $80904958
 {
-  # update::aiInput (specifically right before calling aiInput::child_update)
-  
-  # last line before nana child_update call
-    lwz r3, 0x0034 (r31)
-    
-    # r3 = childAi (AiInput)
-    # r4 = nana stick ptr
-    # r5 = nana buttons
-    # r6 = aiChrIdxPtr
-    # r7 = is tap jump enabled
+loc_0x0:
+  lbz r3, 0x1BA(r30)
+  cmpwi r3, 0xA
+  bne- notCatchWait #if not catchWait
+  lwz r3, 0x44(r23)
+  lhz r4, 0x78(r3)
+  cmpwi r4, 0x6100 #if md = 6100 
+  beq- loc_0x38
+  li r3, 0x0
+  stw r3, 0x0(r24)
+  stw r3, 0x4(r24)
+  stw r3, 0x8(r1)
+  stw r3, 0xD0(r1)
+  stw r3, 0xD4(r1)
+  b loc_0x44
 
-check_if_grabbing:
-    mr r14, r3 # AiInput
-    lwz r15, 0x44(r14) # AiInput->AiAct r15 = AiAct
-    lwz r16, 0x74(r15) # AiAct->AiStat r16 = AiStat
-    # AI action
-    # checks if between 0x34 and 0x3B which covers all "grabbing/holding" states
-    lwz r17, 0xB4(r16)
-    # 0x34 = "Catch" (action)
-    cmpwi r17, 0x34
-    blt+ notThrow
-    # 0x3B = "CatchCut" (action)
-    cmpwi r17, 0x3B
-    bgt+ notThrow
-    b setupGrab
+loc_0x38:
+  lwz r4, 0x5C(r3)
+  cmpwi r4, 0x0
+  bne- notThrow
 
-setupGrab:
-    # grab or setup
-    li r17, 0x0
-    stw r17, 0x0(r4) # stickX
-    stw r17, 0x4(r4) # stickY
-    mr r5, r17 # buttons
-    # li r17, 0x79 # forces nana into mode that allows ai scripts
-    li r17, 0x7e # forces nana into mode that allows ai scripts
-    stw r17, 0x48(r14)
-    li r17, 0xA
-    stb r17, 0x1ba(r16)
-    
-    lhz r17, 0x78(r15) # r4 = aiScript
-    cmpwi r17, 0x6100 # if aiScript = 6100
-    beq- inThrowRoutine
-    b changeToThrowRoutine
+loc_0x44:
+#act_change to 0x6100
+  lwz r3, 0x44(r23)
+  li r5, 0x1
+  stw r5, 0x5C(r3)
+  li r4, 0x6100
 
-inThrowRoutine:
-    # relies on AI script to tell it when the throw is done for some reason?
-    # this will only branch if AI var23 is set to 0 :thonk:
-    lwz r17, 0x5C(r15)
-    cmpwi r17, 0x0
-    bne- notThrow
+  lis r5, -1            #\ initialise this variable that PMDT never did
+  stb r5, 0x24(r1)      #/
 
-    lwz r17, 0x8(r5)                 # \
-    andi. r18, r17, 0x100            # |
-    cmpwi r18, 0x100                 # | if cstick is pressed, tell nana to forget about it
-    beq changeToThrowRoutine         # |
-    stw r18, 0x8(r5)                 # /
+  lis r12, 0x8090
+  ori r12, r12, 0x3F4C
+  mtctr r12
+  bctr 
 
-    b notThrow
-
-changeToThrowRoutine:
-
-    #act_change to 0x6100
-    #args: (AiAct*, unsigned int nextScript, char* nextTargetAIChrIdx, int vanilla ai routine, int unk2)
-    
-    mr r3, r15 # r3 = AiAct
-    li r5, 0x1
-    stw r5, 0x5C(r3)      # sets internal AI variable (var23) to 1 for some reason 
-    lhz r4, 0x78(r3)
-
-    li r4, 0x6100         # next script
-    
-    li r0, -0x1             #\ initialise this variable that PMDT never did
-    stb r0, 0x24(r1)        #| (stb + addi make it a pointer to 0xFF, -
-    addi r5, r1, 0x24       #/ - effectively randomizes the AI target)
-    li r6, 0x6100 # unk1 arg
-    li r7, 0 # unk2 arg
-
-    # calls act_change(this, 0x6100, &0xFF, 0, 0)
-    lis r12, 0x8091
-    ori r12, r12, 0x8554
-    mtctr r12
-    bctr
-    # the bctr means it just branches and will not return here at the next blr.
-    # Thus: exit
-
+#exit
+notCatchWait:
 notThrow:
-  b %end%
+  lwz r3, 0x44(r23)
+  li r4, 0x0
+  stw r4, 0x5C(r3)
+  psq_l f31, 504(r1), 0, 0
+
 }
-
-HOOK @ $8090366c
-{
-  # FNTE = Force Nana Throw Execution
-  # child_update::aiInput (specifically right before the nana distance check)
-
-FNTE_begin:
-    lwz r14, 0x44(r23) # AiInput->AiAct r14 = AiAct
-    lwz r15, 0x74(r14) # AiAct->AiStat r15 = AiStat
-    
-    # AI action (see previous HOOK for explaination)
-    lwz r16, 0xB4(r15)
-    # 0x34 = "Catch" (action)
-    cmpwi r16, 0x34
-    blt+ FNTE_normalExec
-    # 0x3B = "CatchCut" (action)
-    cmpwi r16, 0x3B
-    bgt+ FNTE_normalExec
-    bl FNTE_cache_large_dist
-    b FNTE_normalExec
-
-FNTE_big_long_dist:
-    float 9999
-
-FNTE_cache_large_dist:
-    mflr r12 # lr is set by the bl here...
-    lfs f31, 0x4(r12) # ...which lets us grab the "FNTE_big_long_dist" float based on an offset
-    blr
-
-FNTE_normalExec:
-    fcmpo 0, f31, f29
-}
-
-HOOK @ $809188B0
-{
-  # forces nana to ignore calls to script 0x1120 while grabbing 
-  # r26 = next script
-  # r25 = AiActPtr
-nana_check:
-  lwz r14, 0x74(r25) # r14 = AiStat
-  lbz r15, 0xAF(r14) # r15 = character ID
-  cmpwi r15, 0x10
-  bne end
-
-action_check:
-  lwz r15, 0xB4(r14) # r15 = action ID
-  cmpwi r15, 0x39 # r39 = grab idle
-  bne end
-
-check_if_6100:
-  lhz r15, 0x78(r25)
-  cmpwi r15, 0x6100
-  beq ignore_if_6100
-
-end:
-  sth r26, 120(r25)
-
-ignore_if_6100:
-}
-op nop @ $809036cc
 
 Custom AI Function Loader [Magus]
 * C291E108 0000002A

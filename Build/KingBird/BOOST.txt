@@ -44,7 +44,8 @@ op blt- 0x34	   @ $8018CFC8
 .include Source/Project+/Items.asm
 .include Source/Project+/Pause.asm
 .include Source/Project+/Collision.asm
-.include Source/Project+/TexFlags.asm
+#.include Source/Project+/TexFlags.asm	# This code is currently having issues interacting with the Code Menu. Included 
+					# to allow an understanding of how it will mechanically work in the future.
 
 .include Source/Extras/QuickStart.asm
 #.include Source/Extras/Console.asm	# Only use this on a Wii or Wii U! The codes in this are necessary for the slower specifications of the actual console.

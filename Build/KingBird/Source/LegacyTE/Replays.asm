@@ -95,6 +95,7 @@ HOOK @ $80764F18
   
   	lis r12, 0x800C			#
 	lhz r12, -0x615E(r12)   # Get ASL input from 800B9EA2
+	
 	sth r12,  0x44A(r3) # previously 91301F4A. Sets replay ASL input.
 	lwz r12, -0x2F8(r4) # previously 9134C908
 	cmpwi r12, 0
@@ -106,7 +107,6 @@ HOOK @ $80764F18
 	rlwinm. r31, r28, 0, 24, 24; bne- loc_0xA0	# Odd operation, probably not right.
 	
   lbz r31, 0x0B(r28);  cmpwi r31, 0xFF;  beq- loc_0xA0	# Controller info. Will be FF if an AI.
-  lbz r31, 0x2F(r28)						# Get controller slot.
   lis r30, 0x805B;  ori r30, r30, 0xC068	# Something related to the Code Menu?
   rlwinm r31, r31, 2, 28, 29		# was previously rlwinm r31, r31, 2, 0, 1, which broke it
   add r31, r31, r30
@@ -161,8 +161,12 @@ loc_0xA0:
   
   lwz r24, -0x234(r4) # previously 9134C9CC
 
-  lwz r29, -0x4340(r13)	# Match timer
-  lwz r29, 4(r29)		# Get current frame 
+  #lwz r29, -0x4340(r13)	# Match timer alt way to get it 
+  #lwz r29, 0(r29)
+  #lwz r29, 4(r29)		# Get current frame 
+  
+  lis r29, 0x9018
+  lwz r29, 0x12A4(r29)  # Get current frame
 
 ###
 # The below was supposed to be a new check 
@@ -181,7 +185,7 @@ loc_0xA0:
   
 #  lis r25, 0x805C
 #  lwz r25, -0x745C(r25)	# 805B8BA4
-# lwz r25, 0x48(r25)
+#  lwz r25, 0x48(r25)
 #  lbz r25, 0x54(r25)	# Get game start status
 #  andi. r25, r25, 0x70	# 0x70 is set if it is a normal match. (0x40 for 3, 0x20 for 2, 0x10 for 1)
 						# 0x4 and 0x8 set for "Ready GO!"
@@ -339,7 +343,6 @@ HOOK @ $8091319C
   li r29, 0x0
   li r26, 0x1
   lbz r30, 0(r12)
-  cmpwi r29, 0x6;  bge- loc_0x7C
 
 loc_0x5C:
   andi. r25, r30, 0x80;  beq- loc_0x6C
@@ -348,7 +351,7 @@ loc_0x5C:
 loc_0x6C:
   rlwinm r30, r30, 1, 1, 0
   addi r29, r29, 0x1
-  cmpwi r29, 0x6;  blt+ loc_0x5C
+  cmpwi r29, 6;  blt+ loc_0x5C		# Loop 6 times
 
 loc_0x7C:
   andi. r25, r30, 0x80;    beq- loc_0x94
@@ -485,7 +488,6 @@ HOOK @ $8004ACC8
 
 	mr r3, r0		# Original operation
 }
-
 HOOK @ $80764E88
 {
 	li r3, 11			# \
@@ -536,9 +538,7 @@ loc_0x84:
   mr r3, r31
   rlwinm. r31, r28, 0, 24, 24; bne- loc_0xF0		# Odd operation?
   
-  lbz r31, 0xB(r28);  cmpwi r31, 0xFF;  beq- loc_0xF0 # Check if this is an AI
-  lbz r31, 0x2F(r28)	# Get controller slot
- 
+  lbz r31, 0xB(r28);  cmpwi r31, 0xFF;  beq- loc_0xF0 # Check if this is an AI 
  
   rlwinm r31, r31, 0, 29, 31
   lis r30, 0x805B;  ori r30, r30, 0xC068
@@ -628,7 +628,6 @@ Not_Replay:
   
   lwz r12, 0x4(r28)	# Original operation
 }
-
 HOOK @ $80152C74
 {
 	mr r28, r3		# Original operation
@@ -696,7 +695,7 @@ loc_0x80:
 
 HOOK @ $8004B9E0
 {
-  lis r30, 0x805C;  lbz r30, -0x75F6(r30);  cmpwi r30, 0x0;  bne- loc_0x28 # Unk Pause Statuse
+  lis r30, 0x805C;  lbz r30, -0x75F6(r30);  cmpwi r30, 0x0;  bne- loc_0x28 # Unk Pause Status
   lis r30, 0x805C;  lbz r30, -0x75F5(r30);  cmpwi r30, 0x0;  beq+ loc_0x28 # Code Menu/Frame Advance active
   li r0, 0x0;  b %END%
 

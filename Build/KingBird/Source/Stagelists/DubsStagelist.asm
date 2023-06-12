@@ -48,14 +48,14 @@ TABLE_2:
 0x10, | # Spear Pillar
 0x34, | # Bell Tower
 0x0D, | # Halberd
-0x0B, | # Frigate Orpheon
+0x0B, | # Frigate Husk
 0x14, | # Castle Siege
 0x1D, | # PictoChat
 0x04, | # Metal Cavern
 0x15, | # Wario Land (Singles Only)
 0x20, | # Yoshi's Story
 0x0F, | # Saffron City
-0x0A  | # Metroid Lab
+0x0A  | # Ceres Space Colony
 
 TABLE_3:
 	byte[25] |
@@ -94,7 +94,7 @@ half[62] |	# Stage Count + 2
 | # OLD SLOTS
 0x0101, 0x0202, 0x0303, 0x0404, | # Battlefield, Final Destination, Delfino's Secret, Luigi's Mansion
 0x0505, 0x0606, 0x0707, 0x0808, | # Metal Cavern, Bowser's Castle, Kongo Jungle, Rumble Falls
-0x0909, 0x330A, 0x492C, 0x0C0C, | # Pirate Ship, Hyrule Castle, Metroid Lab, Frigate Orpheon
+0x0909, 0x330A, 0x492C, 0x0C0C, | # Pirate Ship, Hyrule Castle, Ceres Space Colony, Frigate Husk
 0x0D0D, 0x0E0E, 0x130F, 0x1410, | # Yoshi's Island, Halberd, Lylat Cruise, Saffron City
 0x1511, 0x1612, 0x1713, 0x1814, | # Spear Pillar, Port Town Aero Dive, Infinite Glacier, Flat Zone 2
 0x1915, 0x1C16, 0x1D17, 0x1E18, | # Castle Siege, Wario Land, Distant Planet, Skyworld

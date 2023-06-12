@@ -4,11 +4,6 @@
 op nop 			@ $80023b88
 op b 0x1C4904	@ $80024028
 
-##########################################
-[Project+] Skip strap screen [PyotrLuzhin]
-##########################################
-op b 0x298		@ $806CADE8
-
 Fixed OSReport Syntax on File Reading [DukeItOut]
 * 0042101F 0000000A
 * 04421020 00000000

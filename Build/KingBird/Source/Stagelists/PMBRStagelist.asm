@@ -23,7 +23,7 @@ TABLE_1:
 0x14, | # Castle Siege
 0x1E, | # Sky Sanctuary Zone
 0x21, | # Golden Temple
-0x0A, | # Metroid Lab
+0x0A, | # Ceres Space Colony
 0x16, | # Distant Planet
 0x0C, | # Yoshi's Island
 0x15, | # Wario Land
@@ -31,7 +31,7 @@ TABLE_1:
 0x01, | # Final Destination
 0x04, | # Metal Cavern
 0x23, | # Dream Land
-0x0B, | # Frigate Orpheon
+0x0B, | # Frigate Husk
 0x08, | # Temple of Time
 0x1C, | # Green Hill Zone
 0x1A, | # Smashville
@@ -94,7 +94,7 @@ half[62] |	# Stage Count + 2
 | # OLD SLOTS
 0x0101, 0x0202, 0x0303, 0x0404, | # Battlefield, Final Destination, Delfino's Secret, Luigi's Mansion
 0x0505, 0x0606, 0x0707, 0x0808, | # Metal Cavern, Bowser's Castle, Kongo Jungle, Rumble Falls
-0x0909, 0x330A, 0x492C, 0x0C0C, | # Temple of Time, Hyrule Castle, Metroid Lab, Frigate Orpheon
+0x0909, 0x330A, 0x492C, 0x0C0C, | # Temple of Time, Hyrule Castle, Ceres Space Colony, Frigate Husk
 0x0D0D, 0x0E0E, 0x130F, 0x1410, | # Yoshi's Island, Halberd, Lylat Cruise, Saffron City
 0x1511, 0x1612, 0x1713, 0x1814, | # Spear Pillar, Port Town Aero Dive, Infinite Glacier, Flat Zone 2
 0x1915, 0x1C16, 0x1D17, 0x1E18, | # Castle Siege, Wario Land, Distant Planet, Skyworld

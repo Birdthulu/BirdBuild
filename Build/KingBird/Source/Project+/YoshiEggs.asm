@@ -1,8 +1,10 @@
 ###########################################################
-Yoshi Eggs are Costume Based v1.2 [ds22] 
+Yoshi Eggs are Costume Based v1.2β [ds22] 
 # 
 # 1.1: (char id fix fix)
 # 1.2: Made compatible with tex files.
+# 1.2β: Reverted mdl+tex compatibility temporarily.
+#			(behaves like 1.1)
 ###########################################################
 HOOK @ $80A1580C
 {
@@ -15,7 +17,15 @@ Yoshi:
   	lis r26, 0x80B8;    lwz r26, 0x7C50(r26);lwz r26, 0(r26)
   	mulli r31, r31, 0x4D4
   	add r26, r26, r31
-  	lwz r4, 0x20(r26)	# 0x18 + 8
+  	# lwz r4, 0x20(r26)	# 0x18 + 8	# 1.2 version, requires Mdl+Tex split codes
+	
+	# 1.1/1.2β Loop through costume slots. The block below until the next 1.1/1.2β comment 
+	#	should be removed when updated back to 1.2
+	addi r26, r26, 0x18
+YoshiLoop:
+	lwzu r4, 4(r26); cmpwi r4, 0xFF; bge+ YoshiLoop 
+	# 1.1/1.2β
+	
 	stw r4, 0x14(r1)
 	b finish
 Kirby:

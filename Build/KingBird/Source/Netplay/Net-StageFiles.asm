@@ -382,8 +382,25 @@ SpecialCase:
 	bctrl
 	b ModifyStageName	
 }
+# Fix replay loading, especially in the case of dual load pacs
+HOOK @ $811983E8
+{
+	lis r3, 0x805A		# \
+	lwz r3, 0xE0(r3)	# |
+	lwz r3, 0x08(r3)	# | Get stage ID
+	lhz r3, 0x1A(r3)	# /
+	lis r12, 0x8053
+	ori r12, r12, 0xE000
+	mtctr r12
+	li r0, -1			# \ Force clearing out of stage slot to avoid sticky alt selections.
+	sth r0, 0xFB8(r12)	# /
+	bctrl
+	lwz r0, 0x14(r1)		# Original operation
+}
 
 # Force secondary stage pacs to load based on the parameter
+# 806BC610
+# 805A00E0 0008 001A
 CODE @ $806BE230
 {
 	# Normally access the stage ID from 805A00E0 -> 08 -> 1A to check if Castle Siege or Lylat Cruise
@@ -391,6 +408,14 @@ CODE @ $806BE230
 	lbz r12, -0xFEB(r12)	#
 	andi. r12, r12, 8		# Bit flag relevant
 	beq+ 0x10				# Skip setting Dual Load flag!
+}
+CODE @ $8094AC1C
+{
+	# Normally access the stage ID from 0x40(r3) -> 1A
+	lis r12, 0x8054			# Get Dual Load flag at 80530015
+	lbz r12, -0xFEB(r12)	#
+	andi. r12, r12, 8		# Bit flag relevant
+	beq+ 0x258				# Skip setting Dual Load behavior!
 }
 HOOK @ $806BE22C
 {
@@ -402,14 +427,6 @@ HOOK @ $806BE22C
 	mtctr r12
 	bctr					# If it is, it is not a dual-load stage!
 NormalStage:
-}
-CODE @ $8094AC1C
-{
-	# Normally access the stage ID from 0x40(r3) -> 1A
-	lis r12, 0x8054			# Get Dual Load flag at 80530015
-	lbz r12, -0xFEB(r12)	#
-	andi. r12, r12, 8		# Bit flag relevant
-	beq+ 0x258				# Skip setting Dual Load behavior!
 }
 
 # TODO: Address secondary pac shuffling for Lylat Cruise. Currently checks for substage count at 8094AEA4???
@@ -541,9 +558,11 @@ CODE @ $8053E000
     cmplwi  r17, 0x83E4       # |
     bne+    Multiplayer       #/
 Replay:
-    lis     r16, 0x9130       #\  Ignore real inputs and only receive them from the replay info.
-    lhz     r16, 0x1F4A(r16)  # | Replays insert them into 91301F4A
-    sth     r16, 2(r28)       #/
+	li r3, 11					# \
+	bla 0x0249CC				# / Get replay heap offset
+	lhz 	r16, 0x44A(r3)		# \ Get Replay ASL value	
+	sth     r16, 2(r28)       	# /
+	li		r0, 0xFF			# r0 was overwritten, but we still need it!
 Multiplayer:    
 ClassicAllStar:	
 	lis r12, 0x8053

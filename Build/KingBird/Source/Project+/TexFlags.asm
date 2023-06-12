@@ -111,50 +111,73 @@ HOOK @ $8084D098
 notTex:
 	crclr 6, 6		# Original operation
 }
-HOOK @ $8084D0A4
-{
-	addi r3, r1, 0x290
-	lis r12, 0x8001			# \
-	ori r12, r12, 0xF59C	# | getModSDFile 
-	mtctr r12				# | (custom routine, make sure it is in FilePatchCode.asm!)
-	bctrl					# /
-	cmpwi cr0, r22, 8
-	cmpwi cr1, r3, 0
-	bne-  cr0, notMdl
-MdlFile:
-	lwz r12, 0(r1)			# \ Currently applied mask
-	lwz r12, 0x30(r12)		# |
-	andi. r3, r12, 0x8000 	# | If a tex file has not been set, then behave as in Brawl
-	beq MdlTex				# / so we know the slot is wrong! Modders DON'T want that fixed.
-	beq+ cr1, MdlSync		# If the tex file was set and the model was found, then proceed.
-RoundToNearestFive:
-	# r23 is costume. Discarded after this function is called.
-	li r3, 0
-RoundLoop:
-	sub r4, r23, r3
-	cmpwi r4, 5
-	ble- RoundComplete
-	addi r3, r3, 5
-	b RoundLoop
-RoundComplete:
+HOOK @ $8084D004
+{	
+	cmpwi r23, 62; beq- noTexSplit	# \ At least for now, we're keeping hidden alts unsplit
+	cmpwi r23, 61; beq- noTexSplit	# /
+CheckForTex:
+	
+	lis r12, 0x80AD
+	ori r12, r12, 0x8254		# 4 before slot table. Modify to Slot for P+EX!
+	addi r11, r12, 4			# Get the exact table start into r11
 
-	mr r23, r3				# New costume number to check for to pair with the tex file.
-	mr r3, r30
-	lis r12, 0x8084			# \
-	ori r12, r12, 0xCAFC	# | Start over with new costume file number
-	mtctr r12				# |
-	bctr					# /
-notMdl:
-	beq- cr1, MdlTex
+slotLoop:	
+	lwzu r3, 0x4(r12)			# Increment r12 by 4 each read
+	cmpw r3, r31
+	bne slotLoop				# This will be safe because it is impossible for that table
+								# to NOT have this value given circumstances
+	sub r11, r12, r11			# Get the difference between these two
+	srwi r3, r11, 4				# Divide by 0x10 and filter out lowest bytes
+	bla 0x0AF708				# Convert to CSS slot 
+	
+	rlwinm r3, r3, 4, 0, 27		# Each block is separated by 0x10. 
+	addi r3, r3, 8				# It will be offset 8 for each 0x10 block	
+	
+	lis r12, 0x8058				# \ Character table. Change to CSSSlot for P+EX!
+	ori r12, r12, 0x5B00		# /
+	lwzx r12, r12, r3			# pointer to costume masq table
+	mr r11, r12
+	rlwinm r5, r23, 0, 26, 31	# NOP'd out operation below this hook
+	li r6, 0					# Starting default: 00
+loop:
+	lbz r3, 0x0(r12)
+	lbz r4, 0x1(r12)
+	cmpwi r3, 0xC			# table terminator
+	beq notFound			# Won't actually trigger for a real costume but a safety check anyway
+	andi. r0, r3, 0x80
+	beq+ notParentModel
+	mr r6, r4				# Most recent model reference found
+notParentModel:
+	cmpw r4, r5				# Is it the costume ID in r8?
+	addi r12, r12, 2
+	bne+ loop
+	
+	andi. r0, r3, 0xC0		# Upper nybble
+	beq noTexSplit
+	andi. r0, r3, 0x80
+	bne hasMdl
+	cmpwi r22, 8
+	bne hasMdl
+	mr r5, r6				# Use this ID instead of the costume ID
+hasMdl:	
+	b hasTex
+###
+noTexSplit:
+	rlwinm r5, r23, 0, 26, 31	# NOP'd out operation below this hook
+	cmpwi r22, 8
+	beq unsplitMdlTex
+notFound:
 	lis r12, 0x8084			# \
 	ori r12, r12, 0xE474	# | Abort trying to spawn the tex.pac if it doesn't exist!
 	mtctr r12				# |
 	bctr					# /
-MdlSync:
-	lwz r23, 0xFBC(r1)		# Restore costume ID so it doesn't softlock from a mismatch!
-MdlTex:
-	li r4, 3		# Original operation
+###
+hasTex:
+unsplitMdlTex:
+	addi r3, r1, 0x60		# Original operation
+	
 }
+op NOP @ $8084D00C			# We're accounting for this above. Normally sets r5 to the costume.
 HOOK @ $8084C368
 {
 	cmplwi r7, 15;				bne Normal			# Only Check for Tex Archives!
@@ -179,8 +202,6 @@ Normal:
 }
 HOOK @ $80829874		# Push Texture, Then Model, So Texture Access attempt is visible to Model Check!
 {	
-CheckForTex:
-
 	li r3, 0
 	ori r0, r3, 0x8000
 	stw r3, 0x10(r1)
@@ -192,12 +213,14 @@ CheckForTex:
 	lwz r12, 0x30(r12)
 	mtctr r12
 	bctrl				# Push Tex check (0x8000)
+noTexSplit:
+notFound:
 	li r3, 0			# Original operation, get ready to push costume model check (0x100)
 
 }
 HOOK @ $8084E94C
 {
-	cmpwi r0, 15	# Original operation
+	cmpwi r0, 15			# Original operation
 	bne+ %END%
 	lis r5, 0x80B8
 	lwz r5, 0x7AA0(r5)		# the common parameter for fighters happened to use 15

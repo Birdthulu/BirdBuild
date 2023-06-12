@@ -132,7 +132,7 @@ Table_Skip:
 # 901A3090 references -> Written to CodeFlag+0x4
 # 901A30F8 references -> Written to CodeFlag+0x8
 # 901A30FC references -> Written to CodeFlag+0xC
-# 901A3200 size index table -> FRMH heap 0x60-0x85F
+# 901A3200 size index table -> 8053ED00
 ###########################################################################################################################################################
 
 .alias CustomSoundbankRange = 0x0144	# Custom soundbanks are 0x144 or higher
@@ -336,10 +336,12 @@ HOOK @ $801C8374
   addis r14, r14, 0xE		#
   addi  r14, r14, 0x3C6C	# Desired Offset: E3C6C  
   
-  lwz r15, 0x40(r1)
-  lwz r15, 0x1C(r15)
-  lwz r15, 0x94(r15)
-  lwz r15, 0x490(r15)		# Pointer to mostly unused FRMH sound heap 
+  # lwz r15, 0x40(r1)
+  # lwz r15, 0x1C(r15)
+  # lwz r15, 0x94(r15)
+  # lwz r15, 0x490(r15)		# Pointer to mostly unused FRMH sound heap. Commented out as it was actually used by Pokemon Trainer 
+  # addi r15, r15, 0x60		# Fills only up to 0x58 normally
+  lis r15, 0x8053;  ori r15, r15, 0xED00
   
   subi r19, r26, CustomSoundbankRange
   mulli r19, r19, 0x8
@@ -357,10 +359,12 @@ HOOK @ $801C7AB4
   lwz r0, 0xC(r3)	# Original operation
   cmplwi r29, CustomSoundbankRange;  blt- %END%
 
-  lwz r28, 0x10(r1)
-  lwz r28, 0x1C(r28)
-  lwz r28, 0x94(r28)
-  lwz r28, 0x490(r28)		# Pointer to mostly unused FRMH sound heap 
+  # lwz r28, 0x10(r1)
+  # lwz r28, 0x1C(r28)
+  # lwz r28, 0x94(r28)
+  # lwz r28, 0x490(r28)		# Pointer to mostly unused FRMH sound heap. Commented out as it actually was used by Pokemon Trainer 
+  # addi r28, r28, 0x60		# Start at offset 0x60
+  lis r28, 0x8053;  ori r28, r28, 0xED00
   subi r12, r29, CustomSoundbankRange 
   mulli r12, r12, 0x8		# Index for this hook and the one below
   add r12, r28, r12
