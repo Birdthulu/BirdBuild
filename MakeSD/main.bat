@@ -8,6 +8,8 @@ cd /d %~dp0
 
 ::set MIN_EXEC_TIME=3
 
+powershell.exe .\ConfigureNetplay.ps1
+
 call settings.bat
 
 IF EXIST "%SD_CARD_PATH%" goto :Continue
@@ -27,14 +29,6 @@ if %PURGE%==1 (
 )
 
 call mount.bat || goto error
-
-ROBOCOPY "%BUILD_DIR:\=\\%KingBird\pf\sound\tracklist" "%BUILD_DIR:\=\\%KingBird\pf\sound\netplaylist." ^
-    /E ^
-    /NS ^
-    /NP ^
-    /NJH ^
-    %PURGE_COMMAND%
-IF %ERRORLEVEL% GEQ 8 goto error
 
 ROBOCOPY "%BUILD_DIR:\=\\%KingBird" "%SD_CARD_MOUNT_DRIVE_LETTER:\=\\%:\\KingBird." ^
     /E ^
