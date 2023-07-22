@@ -278,8 +278,8 @@ PHYSICS_DATA:
 	byte[2] 0x09, 0x1B; half 0x81D7; float 0.024	# |
 	byte[2] 0x09, 0x1D; half 0x81D6; float 0.952	# | Falcon Dive physics
 	byte[2] 0x09, 0x1D; half 0x81D7; float 0.952	# |
-	byte[2] 0x09, 0x1B; half 0x81D6; float 1.12		# |
-	byte[2] 0x09, 0x1B; half 0x81D7; float 1.12		# /
+	byte[2] 0x09, 0x1E; half 0x81D6; float 1.12		# |
+	byte[2] 0x09, 0x1E; half 0x81D7; float 1.12		# /
 	
 	byte[2] 0x0A, 0x06; half 4; float 1.12			# Ness
 	byte[2] 0x0B, 0x06; half 4; float 1.12			# Bowser

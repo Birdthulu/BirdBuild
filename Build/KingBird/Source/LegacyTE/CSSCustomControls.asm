@@ -774,10 +774,10 @@ loc_0x20:
 HOOK @ $8069B840
 {
   lbz r19, 604(r29)
-  cmpwi r19, 0x0;  bne- loc_0x14
-  cmpwi r3, 0x3E8; b %END%
+  cmpwi r19, 0x0;  bne- loc_0x14	# Check if in tag editing state 
+  cmpwi r3, 1000; b %END%			# Pretend there are an infinite amount of tags when editing 
 loc_0x14:
-  cmpwi r3, 0x78
+  cmpwi r3, 121						# Allow a max of 120 editable tags by being 120+1
 }
 HOOK @ $8069F9E4
 {
